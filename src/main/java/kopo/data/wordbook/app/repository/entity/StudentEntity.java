@@ -12,15 +12,15 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDate;
 
-@Entity
 @Slf4j
 @Getter
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @DynamicInsert
 @DynamicUpdate
-@Builder
-@NoArgsConstructor(force = true)
-@AllArgsConstructor
+@Entity
 @Table(name = "STUDENT")
 public class StudentEntity
 
@@ -40,7 +40,7 @@ public class StudentEntity
         String regId;
         @Column(name = "REG_DATE")
         LocalDate regDate;
-        @Column(name = "CHGANGER_ID", length = 20, nullable = false)
+        @Column(name = "CHANGER_ID", length = 20, nullable = false)
         String changerId;
         @Column(name = "CHANGER_DATE")
         LocalDate changerDate;

@@ -1,5 +1,6 @@
 package kopo.data.wordbook.app.service.implement;
 
+import kopo.data.wordbook.app.controller.response.LoginResponseData;
 import kopo.data.wordbook.app.dto.MsgDTO;
 import kopo.data.wordbook.app.dto.StudentDTO;
 import kopo.data.wordbook.app.repository.StudentRepository;
@@ -19,13 +20,15 @@ public class StudentService implements IStudentService {
     private final StudentRepository studentRepository;
 
     @Override
-    public int getLogin(String studentId, String password) {
+    public LoginResponseData getLogin(String studentId, String password) {
         Optional<StudentEntity> rEntity = Optional.ofNullable(studentRepository.findByStudentIdAndPassword(studentId, password));
 
+        LoginResponseData rData = null;
+
         if (rEntity.isEmpty()) {
-            return 0;
+            return rData;
         }
-        return 1;
+        return rData;
     }
 
     @Transactional
