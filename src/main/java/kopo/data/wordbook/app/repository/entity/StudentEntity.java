@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import kopo.data.wordbook.app.dto.StudentDTO;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.DynamicInsert;
@@ -13,7 +14,8 @@ import java.time.LocalDate;
 
 @Entity
 @Slf4j
-//@Getter
+@Getter
+@ToString
 @DynamicInsert
 @DynamicUpdate
 @Builder
@@ -42,4 +44,16 @@ public class StudentEntity
         String changerId;
         @Column(name = "CHANGER_DATE")
         LocalDate changerDate;
-}
+
+        public static StudentEntity of(StudentDTO pDTO) {
+               return StudentEntity.builder()
+                       .studentId(pDTO.studentId())
+                       .password(pDTO.password())
+                       .email(pDTO.email())
+                       .name(pDTO.name())
+                       .regId(pDTO.regId())
+                       .regDate(pDTO.regDate())
+                       .changerId(pDTO.changerId())
+                       .changerDate(pDTO.changerDate()).build();
+        }
+ }

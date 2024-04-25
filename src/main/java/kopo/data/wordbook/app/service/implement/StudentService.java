@@ -1,5 +1,6 @@
 package kopo.data.wordbook.app.service.implement;
 
+import kopo.data.wordbook.app.dto.MsgDTO;
 import kopo.data.wordbook.app.dto.StudentDTO;
 import kopo.data.wordbook.app.repository.StudentRepository;
 import kopo.data.wordbook.app.repository.entity.StudentEntity;
@@ -7,6 +8,7 @@ import kopo.data.wordbook.app.service.IStudentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -18,7 +20,7 @@ public class StudentService implements IStudentService {
 
     @Override
     public int getLogin(String studentId, String password) {
-        Optional<StudentEntity> rEntity = studentRepository.findByStudentIdAndPassword(studentId, password);
+        Optional<StudentEntity> rEntity = Optional.ofNullable(studentRepository.findByStudentIdAndPassword(studentId, password));
 
         if (rEntity.isEmpty()) {
             return 0;
@@ -26,13 +28,28 @@ public class StudentService implements IStudentService {
         return 1;
     }
 
+    @Transactional
     @Override
-    public int postSignUp(StudentDTO pDTO) {
-        StudentEntity pEntity = StudentEntity.builder()
+    public MsgDTO createStudent(StudentDTO pDTO) {
 
-                .build();
+        StudentEntity pEntity = StudentEntity.of(pDTO);
+
+        // FIXME 쿼리 최적화 가능
+        if (studentRepository.existsById(pDTO.studentId())) {
+            return MsgDTO.builder()
+                    .result(false)
+                    .message("Id 가 이미 있습니다!!\n" +
+                            "로그인 처리 안됨!!").build();
+        }
+
         StudentEntity rEntity = studentRepository.save(pEntity);
-        return 0;
+
+        log.info("rEntity : " + rEntity);
+
+
+        return MsgDTO.builder()
+                .message("회원생성 성공!!")
+                .result(true).build();
     }
 
     @Override
