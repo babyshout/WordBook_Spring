@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,18 +22,23 @@ public class StudentService implements IStudentService {
     private final StudentRepository studentRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public LoginResponseData getLogin(String studentId, String password) {
         Optional<StudentEntity> rEntity = Optional.ofNullable(studentRepository.findByStudentIdAndPassword(studentId, password));
 
-        LoginResponseData rData = null;
-
         if (rEntity.isEmpty()) {
-            return rData;
+            return LoginResponseData.builder()
+                    .isLogin(false).build();
         }
-        return rData;
+
+
+        return LoginResponseData.builder()
+                .isLogin(true)
+                .name(rEntity.get().getName())
+                .studentId(rEntity.get().getStudentId()).build();
     }
 
-    @Transactional
+    @Transactional()
     @Override
     public MsgDTO createStudent(StudentDTO pDTO) {
 
@@ -56,7 +63,21 @@ public class StudentService implements IStudentService {
     }
 
     @Override
-    public String getStudentId(String studentName, String email) {
-        return null;
+    public List<String> getStudentId(String studentName, String email) {
+
+        Optional<List<StudentEntity>> optionalResultList = studentRepository.findAllByNameAndEmail(studentName, email);
+
+        if(optionalResultList.isEmpty()){
+            log.warn("getStudentId by name and email got NOTHING!!!1");
+            return null;
+        }
+
+        List<String> returningList = new ArrayList<>();
+        optionalResultList.get().forEach(studentEntity -> returningList.add(studentEntity.getStudentId()));
+        returningList.stream().limit(2).forEach(value -> log.trace("value in returning List : " + value));
+
+
+
+        return returningList;
     }
 }

@@ -5,6 +5,7 @@ import lombok.Builder;
 @Builder
 public record LoginResponseData(
         String studentId,
-        String name
+        String name,
+        Boolean isLogin
 ) {
 }

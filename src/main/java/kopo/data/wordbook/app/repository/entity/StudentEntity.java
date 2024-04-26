@@ -22,38 +22,39 @@ import java.time.LocalDate;
 @DynamicUpdate
 @Entity
 @Table(name = "STUDENT")
-public class StudentEntity
+public class StudentEntity {
 
- {
-        @Id
-        @Column(name = "STUDENT_ID", length = 20, nullable = false)
-        String studentId;
-        @Column(name = "PASSWORD", length = 100, nullable = false)
-        @NonNull
-        String password;
-        @Column(name = "EMAIL", length = 100, nullable = false)
-        String email;
-        @Column(name = "NAME", length = 20, nullable = false)
-        String name;
+    @Id
+    @Column(name = "STUDENT_ID", length = 20, nullable = false)
+    String studentId;
+    @Column(name = "PASSWORD", length = 100, nullable = false)
+    @NonNull
+    String password;
 
-        @Column(name = "REG_ID", length = 20, nullable = false)
-        String regId;
-        @Column(name = "REG_DATE")
-        LocalDate regDate;
-        @Column(name = "CHANGER_ID", length = 20, nullable = false)
-        String changerId;
-        @Column(name = "CHANGER_DATE")
-        LocalDate changerDate;
+    @Column(name = "EMAIL", length = 100, nullable = false)
+    String email;
+    @Column(name = "NAME", length = 20, nullable = false)
+    String name;
 
-        public static StudentEntity of(StudentDTO pDTO) {
-               return StudentEntity.builder()
-                       .studentId(pDTO.studentId())
-                       .password(pDTO.password())
-                       .email(pDTO.email())
-                       .name(pDTO.name())
-                       .regId(pDTO.regId())
-                       .regDate(pDTO.regDate())
-                       .changerId(pDTO.changerId())
-                       .changerDate(pDTO.changerDate()).build();
-        }
- }
+
+    @Column(name = "REG_ID", length = 20, nullable = false)
+    String regId;
+    @Column(name = "REG_DATE")
+    LocalDate regDate;
+    @Column(name = "CHANGER_ID", length = 20, nullable = false)
+    String changerId;
+    @Column(name = "CHANGER_DATE")
+    LocalDate changerDate;
+
+    public static StudentEntity of(StudentDTO pDTO) {
+        return StudentEntity.builder()
+                .studentId(pDTO.studentId())
+                .password(pDTO.password())
+                .email(pDTO.email())
+                .name(pDTO.name())
+                .regId(pDTO.regId())
+                .regDate(pDTO.regDate())
+                .changerId(pDTO.changerId())
+                .changerDate(pDTO.changerDate()).build();
+    }
+}

@@ -1,5 +1,6 @@
 package kopo.data.wordbook.common.aop.log;
 
+import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Optional;
 
 @Slf4j
 @Aspect
@@ -42,9 +44,15 @@ public class SimpleLogAop {
     }
 
     @AfterReturning(value = "cut()", returning = "returnObj")
-    public void afterReturnLog(JoinPoint joinPoint, Object returnObj) {
+    public void afterReturnLog(JoinPoint joinPoint, @Nullable Object returnObj) {
         // 메서드 정보 받아오기
 //        Method method = getMethod(joinPoint);
+
+        Optional<Object> optionalObject = Optional.ofNullable(returnObj);
+        if (optionalObject.isEmpty()) {
+            return;
+        }
+
 
         log.info("return type = {}", returnObj.getClass().getSimpleName());
         if (returnObj instanceof Collection<?>) {

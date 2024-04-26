@@ -9,27 +9,27 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RequestMapping("/api/student/v1/login")
 @RequiredArgsConstructor
 @RestController
+@CrossOrigin(originPatterns = {"http://localhost:5173"})
 public class LogInController {
 
     private final IStudentService studentService;
 
     @PostMapping("/getLogin")
-    public ResponseEntity getLogin(@Valid @RequestBody LoginRequestBody loginRequest) {
-
+    public ResponseEntity getLogin(@Valid @RequestBody LoginRequestBody loginRequest, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return CommonApiResponse.getError(bindingResult);
+        }
         log.trace("loginRequest : " + loginRequest);
 
+
         LoginResponseData rData = studentService.getLogin(loginRequest.studentId(), loginRequest.password());
-
-
         log.trace("rData : " + rData);
 
         return ResponseEntity.ok(

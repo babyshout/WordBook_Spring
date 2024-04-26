@@ -30,23 +30,21 @@ public class SignupController {
     }
 
     @PostMapping("/createStudent")
-    public ResponseEntity createStudent(@Valid @RequestBody CreateStudentRequest requestBody, BindingResult bindingResult){
+    public ResponseEntity createStudent(@Valid @RequestBody CreateStudentRequest requestBody, BindingResult bindingResult) {
         log.info("log.atDebug() + " + log.atDebug());
         log.info("log.getName() + " + log.getName());
         if (bindingResult.hasErrors()) {
             return CommonApiResponse.getError(bindingResult);
         }
-
         log.debug("requestBody : " + requestBody.toString());
 
-        StudentDTO pDTO = StudentDTO.of(requestBody);
 
+        StudentDTO pDTO = StudentDTO.of(requestBody);
         log.debug("pDTO to service : " + pDTO);
 
+
         MsgDTO rDTO = studentService.createStudent(pDTO);
-
         log.debug("rDTO : " + rDTO);
-
 
 
         return ResponseEntity.ok(
