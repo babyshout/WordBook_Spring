@@ -3,6 +3,7 @@ package kopo.data.wordbook.app.controller.rest;
 import jakarta.validation.Valid;
 import kopo.data.wordbook.app.controller.request.GetStudentIdRequestBody;
 import kopo.data.wordbook.app.controller.response.CommonApiResponse;
+import kopo.data.wordbook.app.dto.CommonData;
 import kopo.data.wordbook.app.dto.MsgDTO;
 import kopo.data.wordbook.app.service.IStudentService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import java.util.List;
 @CrossOrigin(originPatterns = {"http://localhost:5173"})
 public class ForgotLogin {
     final private IStudentService studentService;
+    private final CommonData commonData = new CommonData();
 
     @PostMapping("/get-id-list")
     public ResponseEntity getIdList(@Valid @RequestBody GetStudentIdRequestBody body, BindingResult bindingResult) {
@@ -31,8 +33,8 @@ public class ForgotLogin {
             return CommonApiResponse.getError(bindingResult);
         }
 
-        if (!validBody(body.name(), body.email())) {
-            HashMap<String, String> returningBodyForNotValidBody = new HashMap<String, String>();
+        if (!commonData.validBody(body.name(), body.email())) {
+            HashMap<String, String> returningBodyForNotValidBody = new HashMap<>();
             returningBodyForNotValidBody.put("message", "유효하지 않은 요청 본문 입니다!!");
             return ResponseEntity.badRequest().body(
                     returningBodyForNotValidBody
@@ -65,12 +67,6 @@ public class ForgotLogin {
 
     private boolean validBody(String... args) {
 
-        for (String arg : args) {
-            if (arg == null || arg.isEmpty()) {
-                return false;
-            }
-        }
-
-        return true;
+        return commonData.validBody(args);
     }
 }
