@@ -22,6 +22,7 @@ import java.time.LocalDate;
 @DynamicUpdate
 @Entity
 @Table(name = "STUDENT")
+@EqualsAndHashCode
 public class StudentEntity {
 
     @Id

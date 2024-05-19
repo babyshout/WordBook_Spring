@@ -1,11 +1,13 @@
 package kopo.data.wordbook.app.controller.rest;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import kopo.data.wordbook.app.controller.request.LoginRequestBody;
 import kopo.data.wordbook.app.controller.response.CommonApiResponse;
 import kopo.data.wordbook.app.controller.response.LoginResponseData;
 import kopo.data.wordbook.app.service.IStudentService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,24 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @CrossOrigin(originPatterns = {"http://localhost:5173"})
 public class LogInController {
+
+    @RequiredArgsConstructor
+    @Getter
+    public enum HandleURL {
+        BASE("/api/student/v1/login"),
+        GET_LOGIN(Paths.GET_LOGIN),
+        ;
+//        @JsonSubTypes()
+        private class Paths {
+            public static final String BASE_PATH = "/api/student/v1/login";
+            public static final String GET_LOGIN = "/getLogin";
+        }
+
+        public final String path;
+
+
+
+    }
 
     private final IStudentService studentService;
 
@@ -41,7 +61,7 @@ public class LogInController {
      * @param session
      * @return
      */
-    @PostMapping("/getLogin")
+    @PostMapping(value = HandleURL.Paths.GET_LOGIN)
     public ResponseEntity getLogin(
             @Valid @RequestBody LoginRequestBody loginRequest,
             BindingResult bindingResult,
@@ -67,5 +87,4 @@ public class LogInController {
                 )
         );
     }
-//    enum SESSION_ENUM
 }
