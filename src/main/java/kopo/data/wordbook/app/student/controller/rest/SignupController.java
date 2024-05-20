@@ -1,11 +1,11 @@
-package kopo.data.wordbook.app.controller.rest;
+package kopo.data.wordbook.app.student.controller.rest;
 
 import jakarta.validation.Valid;
-import kopo.data.wordbook.app.controller.request.CreateStudentRequest;
-import kopo.data.wordbook.app.controller.response.CommonApiResponse;
-import kopo.data.wordbook.app.dto.MsgDTO;
-import kopo.data.wordbook.app.dto.StudentDTO;
-import kopo.data.wordbook.app.service.IStudentService;
+import kopo.data.wordbook.app.student.controller.request.CreateStudentRequest;
+import kopo.data.wordbook.app.student.controller.response.CommonApiResponse;
+import kopo.data.wordbook.app.student.dto.MsgDTO;
+import kopo.data.wordbook.app.student.dto.StudentDTO;
+import kopo.data.wordbook.app.student.service.IStudentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

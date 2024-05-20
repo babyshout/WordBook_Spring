@@ -1,6 +1,6 @@
-package kopo.data.wordbook.app.dto;
+package kopo.data.wordbook.app.student.dto;
 
-import kopo.data.wordbook.app.controller.request.CreateStudentRequest;
+import kopo.data.wordbook.app.student.controller.request.CreateStudentRequest;
 import lombok.Builder;
 
 import java.time.LocalDate;

@@ -1,6 +1,7 @@
 package kopo.data.wordbook.app.repository;
 
-import kopo.data.wordbook.app.repository.entity.StudentEntity;
+import kopo.data.wordbook.app.student.repository.StudentRepository;
+import kopo.data.wordbook.app.student.repository.entity.StudentEntity;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,7 +10,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.*;
 
 @DataJpaTest
@@ -19,22 +19,33 @@ class StudentRepositoryTest {
 
     StudentEntity entity;
 
-    LocalDate registeredDate;
+
+    /**
+     * 처음 시작할때 필요한 변수들 선언...
+     */
+    String studentId = "testId";
+    String name = "testName";
+    String password = "testPassword";
+    String email = "test@email";
+    String regId = "testId";
+    LocalDate regDate = LocalDate.now();
+    String changerId = "testId";
+    LocalDate changerDate = LocalDate.now();
+
 
     @BeforeEach
     void setUp() {
-        registeredDate = LocalDate.now();
-
         entity = StudentEntity.builder()
-                .studentId("testId")
-                .name("testName")
-                .password("testPassword")
-                .email("test@email")
-                .regId("testId")
-                .regDate(registeredDate)
-                .changerId("testId")
-                .changerDate(registeredDate)
+                .studentId(studentId)
+                .name(name)
+                .password(password)
+                .email(email)
+                .regId(studentId)
+                .regDate(regDate)
+                .changerId(studentId)
+                .changerDate(regDate)
                 .build();
+
 
         repository.save(entity);
 
@@ -45,6 +56,11 @@ class StudentRepositoryTest {
 
     @AfterEach
     void tearDown() {
+        repository.delete(repository.findById(studentId).get());
+
+        assertThat(
+                repository.findById("testId")
+        ).isEmpty();
     }
 
     @Test
@@ -53,5 +69,10 @@ class StudentRepositoryTest {
 
     @Test
     void findAllByNameAndEmail() {
+    }
+
+    @Test
+    void findByIdAndNameAndEmail() {
+
     }
 }

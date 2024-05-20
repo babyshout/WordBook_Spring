@@ -1,12 +1,11 @@
-package kopo.data.wordbook.app.controller.rest;
+package kopo.data.wordbook.app.student.controller.rest;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import kopo.data.wordbook.app.controller.request.LoginRequestBody;
-import kopo.data.wordbook.app.controller.response.CommonApiResponse;
-import kopo.data.wordbook.app.controller.response.LoginResponseData;
-import kopo.data.wordbook.app.service.IStudentService;
+import kopo.data.wordbook.app.student.controller.request.LoginRequestBody;
+import kopo.data.wordbook.app.student.controller.response.CommonApiResponse;
+import kopo.data.wordbook.app.student.controller.response.LoginResponseData;
+import kopo.data.wordbook.app.student.service.IStudentService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

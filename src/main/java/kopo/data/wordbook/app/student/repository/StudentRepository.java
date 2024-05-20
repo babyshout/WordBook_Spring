@@ -1,6 +1,6 @@
-package kopo.data.wordbook.app.repository;
+package kopo.data.wordbook.app.student.repository;
 
-import kopo.data.wordbook.app.repository.entity.StudentEntity;
+import kopo.data.wordbook.app.student.repository.entity.StudentEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

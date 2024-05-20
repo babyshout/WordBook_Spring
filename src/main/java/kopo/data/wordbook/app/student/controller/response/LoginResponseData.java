@@ -1,4 +1,4 @@
-package kopo.data.wordbook.app.controller.response;
+package kopo.data.wordbook.app.student.controller.response;
 
 import lombok.Builder;
 

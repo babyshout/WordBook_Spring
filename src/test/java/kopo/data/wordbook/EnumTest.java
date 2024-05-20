@@ -1,6 +1,5 @@
 package kopo.data.wordbook;
 
-import kopo.data.wordbook.app.controller.rest.LogInController;
 import org.junit.jupiter.api.Test;
 
 

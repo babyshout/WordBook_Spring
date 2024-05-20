@@ -1,4 +1,4 @@
-package kopo.data.wordbook.app.dto;
+package kopo.data.wordbook.app.student.dto;
 
 public class CommonData {
     public CommonData() {

@@ -1,11 +1,11 @@
-package kopo.data.wordbook.app.service.implement;
+package kopo.data.wordbook.app.student.service.implement;
 
-import kopo.data.wordbook.app.controller.response.LoginResponseData;
-import kopo.data.wordbook.app.dto.MsgDTO;
-import kopo.data.wordbook.app.dto.StudentDTO;
-import kopo.data.wordbook.app.repository.StudentRepository;
-import kopo.data.wordbook.app.repository.entity.StudentEntity;
-import kopo.data.wordbook.app.service.IStudentService;
+import kopo.data.wordbook.app.student.controller.response.LoginResponseData;
+import kopo.data.wordbook.app.student.dto.MsgDTO;
+import kopo.data.wordbook.app.student.dto.StudentDTO;
+import kopo.data.wordbook.app.student.repository.StudentRepository;
+import kopo.data.wordbook.app.student.repository.entity.StudentEntity;
+import kopo.data.wordbook.app.student.service.IStudentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -63,7 +63,7 @@ public class StudentService implements IStudentService {
     }
 
     @Override
-    public List<String> getStudentId(String studentName, String email) {
+    public List<String> getStudentIdList(String studentName, String email) {
 
         Optional<List<StudentEntity>> optionalResultList = studentRepository.findAllByNameAndEmail(studentName, email);
 

@@ -1,10 +1,10 @@
-package kopo.data.wordbook.app.repository.entity;
+package kopo.data.wordbook.app.student.repository.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import kopo.data.wordbook.app.dto.StudentDTO;
+import kopo.data.wordbook.app.student.dto.StudentDTO;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.DynamicInsert;

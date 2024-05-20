@@ -1,4 +1,4 @@
-package kopo.data.wordbook.app.controller.request;
+package kopo.data.wordbook.app.student.controller.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
