@@ -35,6 +35,8 @@ dependencies {
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+//	testImplementation("com.google.code.gson:gson:2.8.9") NOTE record 지원안해서 버전업
+	testImplementation("com.google.code.gson:gson:2.11.0")
 }
 
 tasks.withType<Test> {
