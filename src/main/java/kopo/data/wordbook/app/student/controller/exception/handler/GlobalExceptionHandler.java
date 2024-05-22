@@ -1,6 +1,7 @@
-package kopo.data.wordbook.app.student.controller.exceptionHandler;
+package kopo.data.wordbook.app.student.controller.exception.handler;
 
 import kopo.data.wordbook.app.student.constants.StudentErrorResult;
+import kopo.data.wordbook.app.student.controller.exception.StudentException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -74,9 +75,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         );
     }
 
-    @ExceptionHandler({})
 
-
+    @ExceptionHandler({StudentException.class})
     private ResponseEntity<ErrorResponse> makeErrorResponseEntity(
             final StudentErrorResult errorResult
             ) {
