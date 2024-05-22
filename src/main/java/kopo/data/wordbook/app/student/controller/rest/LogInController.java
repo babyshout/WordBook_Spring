@@ -6,6 +6,7 @@ import kopo.data.wordbook.app.student.controller.request.LoginRequestBody;
 import kopo.data.wordbook.app.student.controller.response.CommonApiResponse;
 import kopo.data.wordbook.app.student.controller.response.LoginResponseData;
 import kopo.data.wordbook.app.student.service.IStudentService;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,14 +28,24 @@ public class LogInController {
         BASE("/api/student/v1/login"),
         GET_LOGIN(Paths.GET_LOGIN),
         ;
-//        @JsonSubTypes()
-        private class Paths {
+
+        //        @JsonSubTypes()
+        public class Paths {
             public static final String BASE_PATH = "/api/student/v1/login";
             public static final String GET_LOGIN = "/getLogin";
+            public static final String DELETE_LOGIN_SESSION_INFORMATION =
+                    "/deleteLoginSessionInformation";
+            public static final String GET_LOGIN_SESSION_INFORMATION =
+                    "/getLoginSessionInformation";
+            public static final String LOGIN_SESSION_INFORMATION =
+                    "/loginSessionInformation";
+
+            public static String getFullLoginSessionInformationPath() {
+                return BASE_PATH + LOGIN_SESSION_INFORMATION;
+            }
         }
 
         public final String path;
-
 
 
     }
@@ -47,14 +58,15 @@ public class LogInController {
      * session -> 해킹될 위험이 거의 없음.. (서버에서만 사용해서)
      * 토큰 -> 토큰 유효한지..
      * 토큰쓰면 validation 해줘야 되는거고..
-     * 
+     * <p>
      * msa 쓰면 이게 맞는데 아니면 세션에 저장해야
-     *
+     * <p>
      * 아니면 매번 세션에 접속해서(서버), 세션에 들어있는 정보 가져오도록..
-     * 
+     * <p>
      * 스프링시큐리티 쓰면 좋고, 안되면 매번 로딩할대마다 체크
-     * 
+     * <p>
      * 쿠키에 들어있는거 민감한 정보는 빼버리고,, 정 쓰고싶으면 암호화해서 사용
+     *
      * @param loginRequest
      * @param bindingResult
      * @param session
@@ -86,4 +98,31 @@ public class LogInController {
                 )
         );
     }
+
+    @Builder
+    public record LoginSessionInformation(
+            String studentId,
+            String name,
+            String email
+    ) {
+
+    }
+
+    private LoginSessionInformation getLoginInformationFromSession(HttpSession session) {
+        return (LoginSessionInformation)
+                session.getAttribute(LoginSessionInformation.class.getName());
+    }
+
+    @GetMapping(HandleURL.Paths.LOGIN_SESSION_INFORMATION)
+    public ResponseEntity<LoginSessionInformation> getLoginSessionInformation(HttpSession session) {
+
+        return ResponseEntity.ok(getLoginInformationFromSession(session));
+    }
+
+    @DeleteMapping(HandleURL.Paths.LOGIN_SESSION_INFORMATION)
+    public ResponseEntity<String> deleteLoginSessionInformation(HttpSession sessions) {
+
+        return ResponseEntity.ok("login session info deleted!");
+    }
+
 }
