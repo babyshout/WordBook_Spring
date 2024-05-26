@@ -7,6 +7,7 @@ import kopo.data.wordbook.app.student.controller.response.CommonApiResponse;
 import kopo.data.wordbook.app.student.controller.response.LoginResponseData;
 import kopo.data.wordbook.app.student.service.IStudentService;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +50,8 @@ public class LogInController {
 
 
     }
+
+    private final HttpSession session;
 
     private final IStudentService studentService;
 
@@ -120,7 +123,8 @@ public class LogInController {
     }
 
     @DeleteMapping(HandleURL.Paths.LOGIN_SESSION_INFORMATION)
-    public ResponseEntity<String> deleteLoginSessionInformation(HttpSession sessions) {
+    public ResponseEntity<String> deleteLoginSessionInformation(HttpSession session) {
+        session.invalidate();
 
         return ResponseEntity.ok("login session info deleted!");
     }
