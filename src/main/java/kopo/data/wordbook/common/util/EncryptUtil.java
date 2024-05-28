@@ -1,5 +1,6 @@
 package kopo.data.wordbook.common.util;
 
+import lombok.SneakyThrows;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.crypto.BadPaddingException;
@@ -45,7 +46,7 @@ public class EncryptUtil {
      * @param str 암호화 시킬 값
      * @return 암호화된 값
      */
-    public static String encHashSHA256(String str) throws Exception {
+    public static String encHashSHA256(String str) {
 
         String res = ""; // 암호화 결과괎이 저장되는 변수
         String plantText = addMessage + str; // 암호화 시킬 값에 보안강화를 위해 임의 값을 추가함
@@ -87,9 +88,11 @@ public class EncryptUtil {
      *
      * 128은 암호화 키 길이를 의미함 128비트는 = 16바이트(1바이트=8비트 * 16 = 128)
      */
+    @SneakyThrows
     public static String encAES128CBC(String str)
-            throws UnsupportedEncodingException, NoSuchAlgorithmException, NoSuchPaddingException,
-            InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
+//            throws UnsupportedEncodingException, NoSuchAlgorithmException, NoSuchPaddingException,
+//            InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException
+    {
 
         byte[] textBytes = str.getBytes("UTF-8");
         AlgorithmParameterSpec ivSpec = new IvParameterSpec(ivBytes);
@@ -105,9 +108,11 @@ public class EncryptUtil {
      *
      * 128은 암호화 키 길이를 의미함 128비트는 = 16바이트(1바이트=8비트 * 16 = 128)
      */
+    @SneakyThrows
     public static String decAES128CBC(String str)
-            throws UnsupportedEncodingException, NoSuchAlgorithmException, NoSuchPaddingException,
-            InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
+//            throws UnsupportedEncodingException, NoSuchAlgorithmException, NoSuchPaddingException,
+//            InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException
+    {
 
         byte[] textBytes = Base64.decodeBase64(str);
         // byte[] textBytes = str.getBytes("UTF-8");

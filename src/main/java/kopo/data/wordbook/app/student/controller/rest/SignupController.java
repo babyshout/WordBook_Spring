@@ -6,6 +6,7 @@ import kopo.data.wordbook.app.student.controller.response.CommonApiResponse;
 import kopo.data.wordbook.app.student.dto.MsgDTO;
 import kopo.data.wordbook.app.student.dto.StudentDTO;
 import kopo.data.wordbook.app.student.service.IStudentService;
+import kopo.data.wordbook.common.util.EncryptUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,13 +31,32 @@ public class SignupController {
     }
 
     @PostMapping("/createStudent")
-    public ResponseEntity createStudent(@Valid @RequestBody CreateStudentRequest requestBody, BindingResult bindingResult) {
+    public ResponseEntity createStudent(
+            @Valid @RequestBody CreateStudentRequest requestBody,
+            BindingResult bindingResult
+    ) {
         log.info("log.atDebug() + " + log.atDebug());
         log.info("log.getName() + " + log.getName());
         if (bindingResult.hasErrors()) {
             return CommonApiResponse.getError(bindingResult);
         }
         log.debug("requestBody : " + requestBody.toString());
+
+        requestBody = CreateStudentRequest.builder()
+                .studentId(requestBody.studentId())
+                .email(
+                        EncryptUtil.encAES128CBC(
+                                requestBody.email())
+                )
+                .emailVerificationCode(requestBody.emailVerificationCode())
+                .name(requestBody.name())
+                .password(
+                        EncryptUtil.encHashSHA256(requestBody.password())
+                )
+                .passwordConfirm(
+                        EncryptUtil.encHashSHA256(requestBody.passwordConfirm())
+                )
+                .build();
 
 
         StudentDTO pDTO = StudentDTO.of(requestBody);

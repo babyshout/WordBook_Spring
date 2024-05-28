@@ -6,6 +6,7 @@ import kopo.data.wordbook.app.student.controller.request.LoginRequestBody;
 import kopo.data.wordbook.app.student.controller.response.CommonApiResponse;
 import kopo.data.wordbook.app.student.controller.response.LoginResponseData;
 import kopo.data.wordbook.app.student.service.IStudentService;
+import kopo.data.wordbook.common.util.EncryptUtil;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -84,6 +85,14 @@ public class LogInController {
             return CommonApiResponse.getError(bindingResult);
         }
         log.trace("loginRequest : " + loginRequest);
+
+        // NOTE password 암호화 위해 처리..
+        loginRequest = LoginRequestBody.builder()
+                .studentId(loginRequest.studentId())
+                .password(EncryptUtil.encHashSHA256(
+                        loginRequest.password()
+                ))
+                .build();
 
 
         LoginResponseData rData = studentService.getLogin(

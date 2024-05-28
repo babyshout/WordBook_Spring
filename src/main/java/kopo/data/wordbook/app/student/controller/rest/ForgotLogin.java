@@ -66,7 +66,6 @@ public class ForgotLogin {
     }
 
     private boolean validBody(String... args) {
-
         return commonData.validBody(args);
     }
 }
