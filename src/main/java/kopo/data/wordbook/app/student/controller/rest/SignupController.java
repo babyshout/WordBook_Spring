@@ -66,6 +66,11 @@ public class SignupController {
         MsgDTO rDTO = studentService.createStudent(pDTO);
         log.debug("rDTO : " + rDTO);
 
+        // 회원가입이 실패한다면
+        if (!rDTO.result()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rDTO);
+        }
+
 
         return ResponseEntity.ok(
                 CommonApiResponse.of(

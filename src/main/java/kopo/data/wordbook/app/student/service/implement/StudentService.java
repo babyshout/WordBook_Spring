@@ -73,6 +73,7 @@ public class StudentService implements IStudentService {
         }
 
         List<String> returningList = new ArrayList<>();
+        optionalResultList.get().forEach(studentEntity -> log.error(studentEntity.getStudentId()));
         optionalResultList.get().forEach(studentEntity -> returningList.add(studentEntity.getStudentId()));
         returningList.stream().limit(2).forEach(value -> log.trace("value in returning List : " + value));
 

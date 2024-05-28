@@ -6,6 +6,7 @@ import kopo.data.wordbook.app.student.controller.response.CommonApiResponse;
 import kopo.data.wordbook.app.student.dto.CommonData;
 import kopo.data.wordbook.app.student.dto.MsgDTO;
 import kopo.data.wordbook.app.student.service.IStudentService;
+import kopo.data.wordbook.common.util.EncryptUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -42,9 +43,14 @@ public class ForgotLogin {
         }
 
 
-        List<String> rList = studentService.getStudentIdList(body.name(), body.email());
+        // email 암호화 안하면 안넘어감..
+        List<String> rList = studentService.getStudentIdList(
+                body.name(),
+                EncryptUtil.encAES128CBC(body.email())
+        );
 
         if(rList == null) {
+            log.error("rList is NULL!!!");
             return ResponseEntity.ok(
                     CommonApiResponse.of(
                             HttpStatus.OK,
