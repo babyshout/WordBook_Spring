@@ -13,4 +13,15 @@ public interface IStudentService {
     MsgDTO createStudent(StudentDTO pDTO);
 
     List<String> getStudentIdList(String studentName, String email);
+
+    /**
+     * reset 요청 들어왔을때 사용
+     * 처리하는 service 로직
+     *
+     * @param studentId
+     * @param name
+     * @param email
+     * @return
+     */
+    String resetPasswordForId(String studentId, String name, String email);
 }

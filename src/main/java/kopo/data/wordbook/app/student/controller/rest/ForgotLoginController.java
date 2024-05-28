@@ -7,6 +7,7 @@ import kopo.data.wordbook.app.student.dto.CommonData;
 import kopo.data.wordbook.app.student.dto.MsgDTO;
 import kopo.data.wordbook.app.student.service.IStudentService;
 import kopo.data.wordbook.common.util.EncryptUtil;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @CrossOrigin(originPatterns = {"http://localhost:5173"})
-public class ForgotLogin {
+public class ForgotLoginController {
     final private IStudentService studentService;
     private final CommonData commonData = new CommonData();
 
@@ -49,7 +50,7 @@ public class ForgotLogin {
                 EncryptUtil.encAES128CBC(body.email())
         );
 
-        if(rList == null) {
+        if (rList == null) {
             log.error("rList is NULL!!!");
             return ResponseEntity.ok(
                     CommonApiResponse.of(
@@ -70,6 +71,49 @@ public class ForgotLogin {
                 )
         );
     }
+
+    @Builder
+    public record ResetPasswordForIdRequestBody(
+            String studentId,
+            String name,
+            String email
+    ) {
+    }
+
+    @PostMapping("reset-password-for-id")
+    public ResponseEntity<String> resetPasswordForId(
+            @Valid @RequestBody ForgotLoginController.ResetPasswordForIdRequestBody body
+    ) {
+        final String resultMessage = studentService.resetPasswordForId(
+                body.studentId,
+                body.name,
+                EncryptUtil.encAES128CBC(body.email)
+        );
+
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMessage);
+        return ResponseEntity.ok(resultMessage);
+    }
+
+    @Builder
+    public record ResetPasswordForIdResponseBody(
+            String resultMessage
+    ){
+
+    }
+//    @PostMapping("reset-password-for-id")
+//    public ResponseEntity<ResetPasswordForIdResponseBody> resetPasswordForId(
+//            @Valid @RequestBody ForgotLoginController.ResetPasswordForIdRequestBody body
+//    ) {
+//        final String resultMessage = studentService.resetPasswordForId(
+//                body.studentId,
+//                body.name,
+//                EncryptUtil.encAES128CBC(body.email)
+//        );
+//
+////        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMessage);
+//        return ResponseEntity.ok(ResetPasswordForIdResponseBody.builder()
+//                .resultMessage(resultMessage).build());
+//    }
 
     private boolean validBody(String... args) {
         return commonData.validBody(args);

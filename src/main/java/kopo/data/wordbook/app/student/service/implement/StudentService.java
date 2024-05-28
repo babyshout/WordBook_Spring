@@ -6,6 +6,7 @@ import kopo.data.wordbook.app.student.dto.StudentDTO;
 import kopo.data.wordbook.app.student.repository.StudentRepository;
 import kopo.data.wordbook.app.student.repository.entity.StudentEntity;
 import kopo.data.wordbook.app.student.service.IStudentService;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -80,5 +81,31 @@ public class StudentService implements IStudentService {
 
 
         return returningList;
+    }
+
+    public enum ResultMessage{
+        SUCCESS_RESET_PASSWORD_FOR_ID("재설정 됐습니다");
+        public final String resultMessage;
+
+        ResultMessage(String resultMessage) {
+            this.resultMessage = resultMessage;
+        }
+
+    }
+    /**
+     * reset 요청 들어왔을때 사용
+     * 처리하는 service 로직
+     *
+     * @param studentId
+     * @param name
+     * @param email
+     * @return
+     */
+    @Override
+    public String resetPasswordForId(String studentId, String name, String email) {
+
+//        return ResultMessage.SUCCESS_RESET_PASSWORD_FOR_ID.resultMessage;
+
+        return null;
     }
 }
