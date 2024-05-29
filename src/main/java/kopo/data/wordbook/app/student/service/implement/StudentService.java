@@ -128,7 +128,7 @@ public class StudentService implements IStudentService {
         String toMail = EncryptUtil.decAES128CBC(newEntityWithNewPassword.getEmail());
         String title = "비밀번호 재설정";
         String contents = "비밀번호가 [" + randomPassword + "] 로 재설정 되었습니다.";
-        mailService.doSendMail(newEntityWithNewPassword.getEmail(), title, contents);
+        mailService.doSendMail(toMail, title, contents);
 
 
 //        return ResultMessage.SUCCESS_RESET_PASSWORD_FOR_ID.resultMessage;
@@ -142,7 +142,7 @@ public class StudentService implements IStudentService {
     private StudentEntity createNewStudentEntityWithNewPassword(String newPassword, StudentEntity baseEntity) {
         return         StudentEntity.builder()
                 .studentId(    baseEntity.getStudentId())
-                .password(     baseEntity.getPassword())
+                .password(     EncryptUtil.encHashSHA256(newPassword))
                 .email(        baseEntity.getEmail())
                 .name(         baseEntity.getName())
                 .regId(        baseEntity.getRegId())

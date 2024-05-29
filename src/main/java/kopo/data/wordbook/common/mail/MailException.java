@@ -8,4 +8,8 @@ public class MailException extends RuntimeException{
         super(e);
         this.e = e;
     }
+
+    public MailException(String message) {
+        super(message);
+    }
 }

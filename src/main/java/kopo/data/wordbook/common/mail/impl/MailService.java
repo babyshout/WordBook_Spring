@@ -23,9 +23,10 @@ public class MailService implements IMailService {
 
     @Override
     public boolean doSendMail(String toMail, String title, String contents) {
-        if (isValidParameter(toMail, title, contents)) {
+        if (!isValidParameter(toMail, title, contents)) {
             log.warn("doSendMail 실패!!!");
-            return false;
+//            return false;
+            throw new MailException("mail 전송 실패");
         }
 
         MimeMessage message = mailSender.createMimeMessage();
@@ -49,17 +50,20 @@ public class MailService implements IMailService {
         return true;
     }
 
-    private boolean isValidParameter(String toMail, String fromMail, String contents) {
+    private boolean isValidParameter(String toMail, String title, String contents) {
         if (toMail.isEmpty()) {
             log.warn("toMail 이 비어있음");
+            log.trace("toMail : {}", toMail);
             return false;
         }
-        if (fromMail.isEmpty()) {
+        if (title.isEmpty()) {
             log.warn("toMail 이 비어있음");
+            log.trace("title : {}", title);
             return false;
         }
         if (contents.isEmpty()) {
             log.warn("toMail 이 비어있음");
+            log.trace("contents : {}", contents);
             return false;
         }
         return true;
