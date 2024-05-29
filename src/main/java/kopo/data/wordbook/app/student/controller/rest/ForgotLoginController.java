@@ -3,6 +3,7 @@ package kopo.data.wordbook.app.student.controller.rest;
 import jakarta.validation.Valid;
 import kopo.data.wordbook.app.student.controller.request.GetStudentIdRequestBody;
 import kopo.data.wordbook.app.student.controller.response.CommonApiResponse;
+import kopo.data.wordbook.app.student.controller.response.ResetPasswordForIdResult;
 import kopo.data.wordbook.app.student.dto.CommonData;
 import kopo.data.wordbook.app.student.dto.MsgDTO;
 import kopo.data.wordbook.app.student.service.IStudentService;
@@ -81,17 +82,18 @@ public class ForgotLoginController {
     }
 
     @PostMapping("reset-password-for-id")
-    public ResponseEntity<String> resetPasswordForId(
+    public ResponseEntity<ResetPasswordForIdResult> resetPasswordForId(
             @Valid @RequestBody ForgotLoginController.ResetPasswordForIdRequestBody body
     ) {
-        final String resultMessage = studentService.resetPasswordForId(
+        final ResetPasswordForIdResult result = studentService.resetPasswordForId(
                 body.studentId,
                 body.name,
                 EncryptUtil.encAES128CBC(body.email)
         );
+        log.trace("resetPasswordResult : {}", result);
 
-//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMessage);
-        return ResponseEntity.ok(resultMessage);
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+        return ResponseEntity.ok(result);
     }
 
     @Builder

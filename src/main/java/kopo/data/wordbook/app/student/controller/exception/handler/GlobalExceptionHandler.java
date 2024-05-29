@@ -2,6 +2,7 @@ package kopo.data.wordbook.app.student.controller.exception.handler;
 
 import kopo.data.wordbook.app.student.constants.StudentErrorResult;
 import kopo.data.wordbook.app.student.controller.exception.StudentException;
+import kopo.data.wordbook.common.mail.MailException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -51,6 +53,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     /**
      * 바로 위의 handleMethodArgumentNotValid 에서만 사용됨!!
+     *
      * @param errorDescription
      * @return
      */
@@ -64,6 +67,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     /**
      * 아래와 같은 패턴으로 예외 처리하기!!
+     *
      * @param e
      * @return
      */
@@ -77,13 +81,39 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 
     @ExceptionHandler({StudentException.class})
+    public ResponseEntity<ErrorResponse> handleStudentException(
+            final StudentException e
+    ) {
+        log.warn("Exception occur: ", e);
+        return this.makeErrorResponseEntity(
+                StudentErrorResult.DUPLICATED_MEMBERSHIP_REGISTER
+        );
+    }
+
     private ResponseEntity<ErrorResponse> makeErrorResponseEntity(
             final StudentErrorResult errorResult
-            ) {
+    ) {
         return ResponseEntity.status(errorResult.getHttpStatus())
                 .body(new ErrorResponse(errorResult.name(),
                         errorResult.getMessage()));
     }
+
+    /**
+     * mail 보낼때 error 나면.. controller 대신 리턴해주는 메서드
+     * @param e
+     * @return
+     */
+    @ExceptionHandler({MailException.class})
+    private ResponseEntity<ErrorResponse> handleMailException(
+            final MailException e) {
+        log.warn("MailException occur: ", e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(
+                        "MAIL_SEND_FAILED",
+                        e.getMessage()
+                ));
+    }
+
 
     @Getter
     @RequiredArgsConstructor

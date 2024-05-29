@@ -70,7 +70,7 @@ class LogInControllerTest {
     }
 
     private LogInController.LoginSessionInformation getMockLoginSessionInformation() {
-        return LogInController.LoginSessionInformation.builder().name("testName")
+        return LogInController.LoginSessionInformation.builder().name("testName_이름")
                 .studentId("testId")
                 .email("test@email").build();
     }

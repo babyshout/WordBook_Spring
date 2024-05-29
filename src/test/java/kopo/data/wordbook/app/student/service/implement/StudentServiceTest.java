@@ -15,6 +15,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -80,5 +82,29 @@ class StudentServiceTest {
                         .build()
         );
         return Optional.of(studentEntityList);
+    }
+
+    @Test
+    void resetPasswordForId() {
+    }
+
+    @Test
+    void resetPasswordGeneratorTest() {
+        Random random = new Random();
+        System.out.println(random.ints(10));
+//        System.out.println(random.ints(10, 15).boxed().collect(Collectors.toList()));
+        System.out.println(random.ints(10, 15, 20));
+        System.out.println(random.nextInt(10));
+
+        for (int i = 0; i < 1000; i++)  {
+            StringBuilder randomNumber = new StringBuilder();
+            for (int j = 0; j < 6; j++) {
+                randomNumber.append(random.nextInt(10));
+            }
+//            System.out.println(randomNumber);
+
+//            Assertions.assertThat(Integer.parseInt(randomNumber)).isBetween(100000, 1000000);
+            Assertions.assertThat(randomNumber.toString().length()).isEqualTo(6);
+        }
     }
 }

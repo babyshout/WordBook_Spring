@@ -1,11 +1,14 @@
 package kopo.data.wordbook.app.student.service.implement;
 
 import kopo.data.wordbook.app.student.controller.response.LoginResponseData;
+import kopo.data.wordbook.app.student.controller.response.ResetPasswordForIdResult;
 import kopo.data.wordbook.app.student.dto.MsgDTO;
 import kopo.data.wordbook.app.student.dto.StudentDTO;
 import kopo.data.wordbook.app.student.repository.StudentRepository;
 import kopo.data.wordbook.app.student.repository.entity.StudentEntity;
 import kopo.data.wordbook.app.student.service.IStudentService;
+import kopo.data.wordbook.common.mail.IMailService;
+import kopo.data.wordbook.common.util.EncryptUtil;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,12 +18,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class StudentService implements IStudentService {
     private final StudentRepository studentRepository;
+    private final IMailService mailService;
 
     @Override
     @Transactional(readOnly = true)
@@ -68,7 +73,7 @@ public class StudentService implements IStudentService {
 
         Optional<List<StudentEntity>> optionalResultList = studentRepository.findAllByNameAndEmail(studentName, email);
 
-        if(optionalResultList.isEmpty()){
+        if (optionalResultList.isEmpty() || optionalResultList.get().size() == 0) {
             log.warn("getStudentId by name and email got NOTHING!!!1");
             return null;
         }
@@ -79,11 +84,10 @@ public class StudentService implements IStudentService {
         returningList.stream().limit(2).forEach(value -> log.trace("value in returning List : " + value));
 
 
-
         return returningList;
     }
 
-    public enum ResultMessage{
+    public enum ResultMessage {
         SUCCESS_RESET_PASSWORD_FOR_ID("재설정 됐습니다");
         public final String resultMessage;
 
@@ -92,6 +96,7 @@ public class StudentService implements IStudentService {
         }
 
     }
+
     /**
      * reset 요청 들어왔을때 사용
      * 처리하는 service 로직
@@ -102,10 +107,58 @@ public class StudentService implements IStudentService {
      * @return
      */
     @Override
-    public String resetPasswordForId(String studentId, String name, String email) {
+    @Transactional
+    public ResetPasswordForIdResult resetPasswordForId(String studentId, String name, String email) {
+        Optional<StudentEntity> rEntity = studentRepository.findByStudentIdAndNameAndEmail(studentId, name, email);
+
+        // 해당 id 가 존재 안한다면 실패했다고 메세지를 보냄
+        if (rEntity.isEmpty()) {
+            return ResetPasswordForIdResult.builder()
+                    .message("해당 아이디가 없습니다")
+                    .isSuccess(false)
+                    .build();
+        }
+
+        String randomPassword = randomPasswordGenerator();
+
+        StudentEntity newEntityWithNewPassword =
+                createNewStudentEntityWithNewPassword(randomPassword, rEntity.get());
+
+        studentRepository.save(newEntityWithNewPassword);
+        String toMail = EncryptUtil.decAES128CBC(newEntityWithNewPassword.getEmail());
+        String title = "비밀번호 재설정";
+        String contents = "비밀번호가 [" + randomPassword + "] 로 재설정 되었습니다.";
+        mailService.doSendMail(newEntityWithNewPassword.getEmail(), title, contents);
+
 
 //        return ResultMessage.SUCCESS_RESET_PASSWORD_FOR_ID.resultMessage;
 
-        return null;
+        return ResetPasswordForIdResult.builder()
+                .message("비밀번호 재설정 성공")
+                .isSuccess(true)
+                .build();
+    }
+
+    private StudentEntity createNewStudentEntityWithNewPassword(String newPassword, StudentEntity baseEntity) {
+        return         StudentEntity.builder()
+                .studentId(    baseEntity.getStudentId())
+                .password(     baseEntity.getPassword())
+                .email(        baseEntity.getEmail())
+                .name(         baseEntity.getName())
+                .regId(        baseEntity.getRegId())
+                .regDate(      baseEntity.getRegDate())
+                .changerId(    baseEntity.getChangerId())
+                .changerDate(  baseEntity.getChangerDate())
+                .build();
+    }
+
+    private String randomPasswordGenerator() {
+        Random random = new Random();
+        StringBuilder randomNumber = new StringBuilder();
+        for (int j = 0; j < 6; j++) {
+            randomNumber.append(random.nextInt(10));
+        }
+
+        return randomNumber.toString();
     }
 }

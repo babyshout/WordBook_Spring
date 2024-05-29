@@ -46,11 +46,11 @@ class ForgotLoginControllerTest {
                 .setControllerAdvice(new GlobalExceptionHandler())
                 // mockHttpServletResponse 가 관리해서 filter 를 추가해서 처리해 줘야함
                 // @WebMvcTest 사용시 없어도 됨..!
-//                .addFilter(new CharacterEncodingFilter("UTF-8", true))
-                .addFilter(((servletRequest, servletResponse, filterChain) -> {
-                    servletResponse.setCharacterEncoding("UTF-8");
-                    filterChain.doFilter(servletRequest, servletResponse);
-                }))
+                .addFilter(new CharacterEncodingFilter("UTF-8", true))
+//                .addFilter(((servletRequest, servletResponse, filterChain) -> {
+//                    servletResponse.setCharacterEncoding("UTF-8");
+//                    filterChain.doFilter(servletRequest, servletResponse);
+//                }))
                 .build();
         gson = new Gson();
     }
@@ -89,7 +89,7 @@ class ForgotLoginControllerTest {
 
         log.error(resultActions.andReturn().getResponse().getCharacterEncoding());
         String resultJsonString = resultActions.andReturn().getResponse().getContentAsString(
-                StandardCharsets.UTF_8
+//                StandardCharsets.UTF_8
         );
         log.error(resultJsonString);
 //        log.error(new String());

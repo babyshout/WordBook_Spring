@@ -2,6 +2,7 @@ package kopo.data.wordbook.app.student.service;
 
 
 import kopo.data.wordbook.app.student.controller.response.LoginResponseData;
+import kopo.data.wordbook.app.student.controller.response.ResetPasswordForIdResult;
 import kopo.data.wordbook.app.student.dto.MsgDTO;
 import kopo.data.wordbook.app.student.dto.StudentDTO;
 
@@ -23,5 +24,5 @@ public interface IStudentService {
      * @param email
      * @return
      */
-    String resetPasswordForId(String studentId, String name, String email);
+    ResetPasswordForIdResult resetPasswordForId(String studentId, String name, String email);
 }
