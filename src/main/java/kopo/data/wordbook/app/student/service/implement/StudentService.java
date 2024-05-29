@@ -1,5 +1,7 @@
 package kopo.data.wordbook.app.student.service.implement;
 
+import kopo.data.wordbook.app.student.constants.StudentErrorResult;
+import kopo.data.wordbook.app.student.controller.exception.StudentException;
 import kopo.data.wordbook.app.student.controller.response.LoginResponseData;
 import kopo.data.wordbook.app.student.controller.response.ResetPasswordForIdResult;
 import kopo.data.wordbook.app.student.dto.MsgDTO;
@@ -42,6 +44,16 @@ public class StudentService implements IStudentService {
                 .isLogin(true)
                 .name(rEntity.get().getName())
                 .studentId(rEntity.get().getStudentId()).build();
+    }
+
+    public StudentEntity getStudentById(String studentId) {
+        Optional<StudentEntity> entityOptional = studentRepository.findById(studentId);
+
+        if (entityOptional.isEmpty()) {
+            throw new StudentException(StudentErrorResult.NO_ENTITY);
+        }
+
+        return entityOptional.get();
     }
 
     @Transactional()

@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import kopo.data.wordbook.app.student.controller.request.LoginRequestBody;
 import kopo.data.wordbook.app.student.controller.response.CommonApiResponse;
 import kopo.data.wordbook.app.student.controller.response.LoginResponseData;
+import kopo.data.wordbook.app.student.repository.entity.StudentEntity;
 import kopo.data.wordbook.app.student.service.IStudentService;
 import kopo.data.wordbook.common.util.EncryptUtil;
 import lombok.Builder;
@@ -99,8 +100,17 @@ public class LogInController {
                 loginRequest.studentId(), loginRequest.password()
         );
         log.trace("rData : " + rData);
-        session.setAttribute("loginInfo", rData);
-        log.trace("loginInfo in session : " + rData);
+//        session.setAttribute("loginInfo", rData);
+//        log.trace("loginInfo in session : " + rData);
+
+        if (rData.isLogin()) {
+            StudentEntity studentEntity = studentService.getStudentById(loginRequest.studentId());
+            LoginSessionInformation info = LoginSessionInformation.of(studentEntity);
+            setLoginSessionInfoToSession(info, session);
+
+            log.trace("set login info to session {}",
+                    this.getLoginInformationFromSession(session).toString());
+        }
 
         return ResponseEntity.ok(
                 CommonApiResponse.of(
@@ -111,22 +121,34 @@ public class LogInController {
         );
     }
 
+    private void setLoginSessionInfoToSession(LoginSessionInformation info, HttpSession session) {
+        log.error("loginInfoName : {}", LoginSessionInformation.class.getName());
+
+        session.setAttribute(LoginSessionInformation.class.getName(),
+                info);
+
+    }
+
+
     @Builder
     public record LoginSessionInformation(
             String studentId,
             String name,
             String email
     ) {
+        public static LoginSessionInformation of(StudentEntity entity) {
+            return LoginSessionInformation.builder()
+                    .studentId(entity.getStudentId())
+                    .email(entity.getEmail())
+                    .name(entity.getName()).build();
+        }
 
     }
 
-    private LoginSessionInformation getLoginInformationFromSession(HttpSession session) {
-        return (LoginSessionInformation)
-                session.getAttribute(LoginSessionInformation.class.getName());
-    }
 
     @GetMapping(HandleURL.Paths.LOGIN_SESSION_INFORMATION)
     public ResponseEntity<LoginSessionInformation> getLoginSessionInformation(HttpSession session) {
+        log.trace(this.getLoginInformationFromSession(session).toString());
 
         return ResponseEntity.ok(getLoginInformationFromSession(session));
     }
@@ -138,4 +160,9 @@ public class LogInController {
         return ResponseEntity.ok("login session info deleted!");
     }
 
+    private LoginSessionInformation getLoginInformationFromSession(HttpSession session) {
+        log.error("loginInfoName : {}", LoginSessionInformation.class.getName());
+        return (LoginSessionInformation)
+                session.getAttribute(LoginSessionInformation.class.getName());
+    }
 }

@@ -15,6 +15,10 @@ public enum StudentErrorResult {
             HttpStatus.INTERNAL_SERVER_ERROR,
             "Unknown Error"
     ),
+    NO_ENTITY(
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            "Internal Server Error"
+    ),
     ;
 
 

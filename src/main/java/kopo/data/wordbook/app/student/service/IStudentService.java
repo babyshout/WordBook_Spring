@@ -5,11 +5,15 @@ import kopo.data.wordbook.app.student.controller.response.LoginResponseData;
 import kopo.data.wordbook.app.student.controller.response.ResetPasswordForIdResult;
 import kopo.data.wordbook.app.student.dto.MsgDTO;
 import kopo.data.wordbook.app.student.dto.StudentDTO;
+import kopo.data.wordbook.app.student.repository.entity.StudentEntity;
 
 import java.util.List;
 
 public interface IStudentService {
     LoginResponseData getLogin(String studentId, String password);
+
+
+    StudentEntity getStudentById(String studentId);
 
     MsgDTO createStudent(StudentDTO pDTO);
 
