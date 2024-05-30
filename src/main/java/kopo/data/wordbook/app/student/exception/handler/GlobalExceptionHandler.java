@@ -1,7 +1,7 @@
-package kopo.data.wordbook.app.student.controller.exception.handler;
+package kopo.data.wordbook.app.student.exception.handler;
 
 import kopo.data.wordbook.app.student.constants.StudentErrorResult;
-import kopo.data.wordbook.app.student.controller.exception.StudentException;
+import kopo.data.wordbook.app.student.exception.StudentException;
 import kopo.data.wordbook.common.mail.MailException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

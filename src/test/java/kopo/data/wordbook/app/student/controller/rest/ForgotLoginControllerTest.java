@@ -1,7 +1,7 @@
 package kopo.data.wordbook.app.student.controller.rest;
 
 import com.google.gson.Gson;
-import kopo.data.wordbook.app.student.controller.exception.handler.GlobalExceptionHandler;
+import kopo.data.wordbook.app.student.exception.handler.GlobalExceptionHandler;
 import kopo.data.wordbook.app.student.service.IStudentService;
 import kopo.data.wordbook.app.student.service.implement.StudentService;
 import kopo.data.wordbook.common.util.EncryptUtil;
@@ -15,15 +15,11 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcResultMatchersDsl;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.filter.CharacterEncodingFilter;
-
-import java.nio.charset.StandardCharsets;
 
 import static kopo.data.wordbook.app.student.controller.rest.ForgotLoginController.*;
 

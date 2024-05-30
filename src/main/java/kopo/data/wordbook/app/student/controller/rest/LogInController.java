@@ -22,7 +22,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/student/v1/login")
 @RequiredArgsConstructor
 @RestController
-@CrossOrigin(originPatterns = {"http://localhost:5173"})
+//@CrossOrigin(
+//        originPatterns = {"http://localhost:5173"}
+////,allowCredentials = "true"
+//)
 public class LogInController {
 
     @RequiredArgsConstructor
@@ -122,7 +125,7 @@ public class LogInController {
     }
 
     private void setLoginSessionInfoToSession(LoginSessionInformation info, HttpSession session) {
-        log.error("loginInfoName : {}", LoginSessionInformation.class.getName());
+        log.trace("loginInfoName : {}", LoginSessionInformation.class.getName());
 
         session.setAttribute(LoginSessionInformation.class.getName(),
                 info);
@@ -151,6 +154,7 @@ public class LogInController {
         log.trace(this.getLoginInformationFromSession(session).toString());
 
         return ResponseEntity.ok(getLoginInformationFromSession(session));
+//        return null;
     }
 
     @DeleteMapping(HandleURL.Paths.LOGIN_SESSION_INFORMATION)
@@ -161,7 +165,7 @@ public class LogInController {
     }
 
     private LoginSessionInformation getLoginInformationFromSession(HttpSession session) {
-        log.error("loginInfoName : {}", LoginSessionInformation.class.getName());
+        log.trace("loginInfoName : {}", LoginSessionInformation.class.getName());
         return (LoginSessionInformation)
                 session.getAttribute(LoginSessionInformation.class.getName());
     }

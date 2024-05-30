@@ -1,4 +1,4 @@
-package kopo.data.wordbook.app.student.controller.exception;
+package kopo.data.wordbook.app.student.exception;
 
 import kopo.data.wordbook.app.student.constants.StudentErrorResult;
 import lombok.Getter;

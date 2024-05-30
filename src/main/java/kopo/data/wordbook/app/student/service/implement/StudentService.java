@@ -1,7 +1,7 @@
 package kopo.data.wordbook.app.student.service.implement;
 
 import kopo.data.wordbook.app.student.constants.StudentErrorResult;
-import kopo.data.wordbook.app.student.controller.exception.StudentException;
+import kopo.data.wordbook.app.student.exception.StudentException;
 import kopo.data.wordbook.app.student.controller.response.LoginResponseData;
 import kopo.data.wordbook.app.student.controller.response.ResetPasswordForIdResult;
 import kopo.data.wordbook.app.student.dto.MsgDTO;
@@ -11,7 +11,6 @@ import kopo.data.wordbook.app.student.repository.entity.StudentEntity;
 import kopo.data.wordbook.app.student.service.IStudentService;
 import kopo.data.wordbook.common.mail.IMailService;
 import kopo.data.wordbook.common.util.EncryptUtil;
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

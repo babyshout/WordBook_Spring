@@ -1,7 +1,7 @@
 package kopo.data.wordbook.app.student.controller.rest;
 
 import com.google.gson.Gson;
-import kopo.data.wordbook.app.student.controller.exception.handler.GlobalExceptionHandler;
+import kopo.data.wordbook.app.student.exception.handler.GlobalExceptionHandler;
 import kopo.data.wordbook.app.student.service.IStudentService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
