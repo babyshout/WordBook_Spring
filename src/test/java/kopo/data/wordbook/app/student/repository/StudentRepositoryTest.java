@@ -1,4 +1,4 @@
-package kopo.data.wordbook.app.repository;
+package kopo.data.wordbook.app.student.repository;
 
 import kopo.data.wordbook.app.student.repository.StudentRepository;
 import kopo.data.wordbook.app.student.repository.entity.StudentEntity;

@@ -1,12 +1,15 @@
 package kopo.data.wordbook.app.student.controller.rest;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import kopo.data.wordbook.app.student.controller.request.CreateStudentRequest;
 import kopo.data.wordbook.app.student.controller.response.CommonApiResponse;
 import kopo.data.wordbook.app.student.dto.MsgDTO;
 import kopo.data.wordbook.app.student.dto.StudentDTO;
 import kopo.data.wordbook.app.student.service.IStudentService;
 import kopo.data.wordbook.common.util.EncryptUtil;
+import lombok.Builder;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -79,5 +82,30 @@ public class SignupController {
                         rDTO
                 )
         );
+    }
+
+    @Builder
+    public record EmailVerificationRequest(
+//            @NotBlank(message = "email 입력해주세요")
+            String email
+    ) {
+    }
+
+    @PostMapping("/getVerificationCode")
+    public ResponseEntity<EmailVerificationCodeResult> getEmailVerificationCode(
+            @RequestBody EmailVerificationRequest body
+    ) {
+        log.trace("body.email() -> {}", body.email());
+        EmailVerificationCodeResult result = studentService.getEmailVerificationCode(body.email());
+
+        return ResponseEntity.ok(result);
+    }
+
+    @Builder
+    public record EmailVerificationCodeResult(
+            String code,
+            Boolean isEmailExists
+    ) {
+
     }
 }

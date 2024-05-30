@@ -25,5 +25,7 @@ public interface StudentRepository extends JpaRepository<StudentEntity, String> 
 
 //    Optional<StudentEntity>
 
+    StudentEntity findDistinctByEmail(String email);
+
 
 }

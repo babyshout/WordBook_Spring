@@ -3,6 +3,7 @@ package kopo.data.wordbook.app.student.service;
 
 import kopo.data.wordbook.app.student.controller.response.LoginResponseData;
 import kopo.data.wordbook.app.student.controller.response.ResetPasswordForIdResult;
+import kopo.data.wordbook.app.student.controller.rest.SignupController;
 import kopo.data.wordbook.app.student.dto.MsgDTO;
 import kopo.data.wordbook.app.student.dto.StudentDTO;
 import kopo.data.wordbook.app.student.repository.entity.StudentEntity;
@@ -29,4 +30,6 @@ public interface IStudentService {
      * @return
      */
     ResetPasswordForIdResult resetPasswordForId(String studentId, String name, String email);
+
+    SignupController.EmailVerificationCodeResult getEmailVerificationCode(String email);
 }

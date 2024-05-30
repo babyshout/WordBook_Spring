@@ -25,3 +25,12 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
+
+# mockMvc 한글깨짐 이슈때문에 추가했지만 안됨
+#server:
+#  servlet:
+#    encoding:
+#      force-response: true
+logging:
+  level:
+    kopo.data.wordbook.app: trace

@@ -1,6 +1,7 @@
 package kopo.data.wordbook.app.student.service.implement;
 
 import kopo.data.wordbook.app.student.constants.StudentErrorResult;
+import kopo.data.wordbook.app.student.controller.rest.SignupController;
 import kopo.data.wordbook.app.student.exception.StudentException;
 import kopo.data.wordbook.app.student.controller.response.LoginResponseData;
 import kopo.data.wordbook.app.student.controller.response.ResetPasswordForIdResult;
@@ -130,7 +131,7 @@ public class StudentService implements IStudentService {
                     .build();
         }
 
-        String randomPassword = randomPasswordGenerator();
+        String randomPassword = randomIntegerCodeGenerator();
 
         StudentEntity newEntityWithNewPassword =
                 createNewStudentEntityWithNewPassword(randomPassword, rEntity.get());
@@ -150,20 +151,47 @@ public class StudentService implements IStudentService {
                 .build();
     }
 
+    @Override
+    public SignupController.EmailVerificationCodeResult getEmailVerificationCode(String email) {
+        String code = randomIntegerCodeGenerator();
+
+        Optional<StudentEntity> entity = Optional.ofNullable(
+                studentRepository.findDistinctByEmail(
+                        EncryptUtil.encAES128CBC(email)
+                )
+        );
+
+//        log.trace("entity -> {}", entity.get());
+
+        if (entity.isPresent()) {
+            log.trace("이메일이 있습니다!!");
+            return SignupController.EmailVerificationCodeResult.builder()
+                    .isEmailExists(true).build();
+        }
+
+//        mailService.doSendMail(email,
+//                "이메일 인증코드",
+//                "회원님의 인증코드는 [" + randomIntegerCodeGenerator() + "] 입니다.")
+        log.trace("이메일이 없습니다!!");
+        return SignupController.EmailVerificationCodeResult.builder()
+                .code(code)
+                .isEmailExists(false).build();
+    }
+
     private StudentEntity createNewStudentEntityWithNewPassword(String newPassword, StudentEntity baseEntity) {
-        return         StudentEntity.builder()
-                .studentId(    baseEntity.getStudentId())
-                .password(     EncryptUtil.encHashSHA256(newPassword))
-                .email(        baseEntity.getEmail())
-                .name(         baseEntity.getName())
-                .regId(        baseEntity.getRegId())
-                .regDate(      baseEntity.getRegDate())
-                .changerId(    baseEntity.getChangerId())
-                .changerDate(  baseEntity.getChangerDate())
+        return StudentEntity.builder()
+                .studentId(baseEntity.getStudentId())
+                .password(EncryptUtil.encHashSHA256(newPassword))
+                .email(baseEntity.getEmail())
+                .name(baseEntity.getName())
+                .regId(baseEntity.getRegId())
+                .regDate(baseEntity.getRegDate())
+                .changerId(baseEntity.getChangerId())
+                .changerDate(baseEntity.getChangerDate())
                 .build();
     }
 
-    private String randomPasswordGenerator() {
+    private String randomIntegerCodeGenerator() {
         Random random = new Random();
         StringBuilder randomNumber = new StringBuilder();
         for (int j = 0; j < 6; j++) {

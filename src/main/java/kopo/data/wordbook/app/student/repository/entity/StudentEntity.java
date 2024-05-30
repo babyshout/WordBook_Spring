@@ -1,20 +1,21 @@
 package kopo.data.wordbook.app.student.repository.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import kopo.data.wordbook.app.student.dto.StudentDTO;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 
 @Slf4j
 @Getter
 @ToString
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -22,7 +23,9 @@ import java.time.LocalDate;
 @DynamicUpdate
 @Entity
 @Table(name = "STUDENT")
-@EqualsAndHashCode
+// @CreatedDate, @LastModifiedDate 작동을 위해 추가
+// @link https://wildeveloperetrain.tistory.com/76
+@EntityListeners(AuditingEntityListener.class)
 public class StudentEntity {
 
     @Id
@@ -41,10 +44,12 @@ public class StudentEntity {
     @Column(name = "REG_ID", length = 20, nullable = false)
     String regId;
     @Column(name = "REG_DATE")
+    @CreatedDate
     LocalDate regDate;
     @Column(name = "CHANGER_ID", length = 20, nullable = false)
     String changerId;
     @Column(name = "CHANGER_DATE")
+    @LastModifiedDate
     LocalDate changerDate;
 
     public static StudentEntity of(StudentDTO pDTO) {

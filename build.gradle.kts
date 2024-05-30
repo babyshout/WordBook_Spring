@@ -36,6 +36,11 @@ dependencies {
 	runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 	annotationProcessor("org.projectlombok:lombok")
+
+	// 테스트코드에서 사용하고싶어서 추가..
+    testCompileOnly("org.projectlombok:lombok")
+	testAnnotationProcessor("org.projectlombok:lombok")
+
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 //	testImplementation("com.google.code.gson:gson:2.8.9") NOTE record 지원안해서 버전업
 	testImplementation("com.google.code.gson:gson:2.11.0")
