@@ -56,7 +56,7 @@ public class SimpleLogAop {
 
         log.info("return type = {}", returnObj.getClass().getSimpleName());
         if (returnObj instanceof Collection<?>) {
-            ((Collection<?>) returnObj).parallelStream().limit(2)
+            ((Collection<?>) returnObj).parallelStream().limit(1)
                     .forEach(value -> log.debug("returning Object : " + value));
         } else {
             log.debug("returning Object : " + returnObj);

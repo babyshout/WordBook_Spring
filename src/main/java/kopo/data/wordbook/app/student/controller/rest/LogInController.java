@@ -146,6 +146,10 @@ public class LogInController {
                     .name(entity.getName()).build();
         }
 
+        public static String getName() {
+            return LoginSessionInformation.class.getName();
+        }
+
     }
 
 

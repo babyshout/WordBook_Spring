@@ -14,11 +14,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @DataJpaTest
-public class NotepadTest {
+public class NotepadRepositoryTest {
     @Autowired
     StudentRepository studentRepository;
 
@@ -138,6 +137,15 @@ public class NotepadTest {
         StudentEntity registerEntity =
                 studentRepository.findById(registerStudent.getStudentId())
                         .orElseThrow();
+        StudentEntity registerEntity2 =
+                studentRepository.findById(registerStudent.getStudentId())
+                        .orElseThrow();
+
+//        Assertions.assertThat(registerEntity).
+
+        log.error("register == this.register -> {}" , registerEntity == this.registerStudent);
+        log.error("register == this.register -> {}" , registerEntity == registerEntity2);
+        log.error("register == this.register -> {}" , registerEntity == this.registerStudent);
 
         NotepadEntity notepadEntity1 = getNotepadEntity(
                 "notepad content 1",
@@ -174,8 +182,23 @@ public class NotepadTest {
 //        ).orElseThrow();
         List<NotepadEntity> list =
                 notepadRepository.findAllByRegStudent(registerEntity);
+        log.info(list.size()+"");
 
 //        list = notepadRepository.findAll();
+
+//        NotepadEntity n1 = list.get(1);
+//        log.error("n1.getRegStudent == studentEntity -> {}", n1.getRegStudent() == registerEntity);
+
+//        log.error(notepadRepository.findByNotepadSeqAndRegStudent(
+//                1L, StudentEntity.builder().studentId("register")
+//                        .password("registerPassword").build()
+//        ).toString());
+
+//        list = notepadRepository.findAllByRegStudent_StudentId(registerEntity.getStudentId());
+//
+//        NotepadEntity n2 = list.get(1);
+//        log.error("n2.getRegStudent == studentEntity -> {}", n2.getRegStudent() == registerEntity);
+
 
         log.info(list.size()+"");
         list.forEach(notepadEntity -> log.trace("notepadEntity : {}", notepadEntity));

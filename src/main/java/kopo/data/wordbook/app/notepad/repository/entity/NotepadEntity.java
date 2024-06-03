@@ -14,6 +14,7 @@ import java.time.LocalDate;
 
 @Slf4j
 @Getter
+@Setter
 @ToString
 @EqualsAndHashCode
 @NoArgsConstructor
@@ -33,11 +34,12 @@ public class NotepadEntity {
     private Long notepadSeq;
 
     @Column(name = "CONTENT", length = 4000)
+    @Lob
     private String content;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
-//            name = "STUDENT_ID",
+//            name = "REG_STUDENT_ID",
 //            nullable = false,
             updatable = false,
             insertable = false
@@ -50,7 +52,7 @@ public class NotepadEntity {
 
     @ManyToOne
     @JoinColumn(
-//            name = "STUDENT_ID"
+//            name = "CHG_STUDENT_ID"
 //            nullable = false
     )
     private StudentEntity chgStudent;
