@@ -12,6 +12,8 @@ public interface NotepadRepository extends JpaRepository<NotepadEntity, Long> {
 
     List<NotepadEntity> findAllByRegStudent(StudentEntity regStudent);
 
+    List<NotepadEntity> findAllByChgStudent(StudentEntity chgStudent);
+
     //    List<NotepadEntity> findAllByRegStudent
 //        List<NotepadEntity> findAllByRegStudent_StudentId(String regStudent_studentId);
     List<NotepadEntity> findAllByRegStudentIs(StudentEntity regStudent);

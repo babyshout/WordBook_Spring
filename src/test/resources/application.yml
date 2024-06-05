@@ -1,36 +1,36 @@
-### Datasource
-##spring.datasource.driver-class-name=org.h2.Driver
-##spring.datasource.url=jdbc:h2:mem:db;DB_CLOSE_DELAY=-1
-##spring.datasource.username=h2test
-##spring.datasource.password=h2test
-##
-##  # JPA
-##spring.jpa.generate-ddl=true
-##spring.jpa.hibernate.ddl-auto=create-drop
-##spring.jpa.open-in-view=false
-##spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.H2Dialect
+## Datasource
+#spring.datasource.driver-class-name=org.h2.Driver
+#spring.datasource.url=jdbc:h2:mem:db;DB_CLOSE_DELAY=-1
+#spring.datasource.username=h2test
+#spring.datasource.password=h2test
 #
-#spring:
-#  datasource:
-#    driver-class-name: org.h2.Driver
-#    url: jdbc:h2:mem:db;DB_CLOSE_DELAY=-1
-#    username: h2test
-#    password: h2test
-#
-#  jpa:
-#    generate-ddl: true
-#    hibernate:
-#      ddl-auto: create-drop
-#    open-in-view: false
-#    properties:
-#      hibernate:
-#        dialect: org.hibernate.dialect.H2Dialect
-#
-## mockMvc 한글깨짐 이슈때문에 추가했지만 안됨
-##server:
-##  servlet:
-##    encoding:
-##      force-response: true
-#logging:
-#  level:
-#    kopo.data.wordbook.app: trace
+#  # JPA
+#spring.jpa.generate-ddl=true
+#spring.jpa.hibernate.ddl-auto=create-drop
+#spring.jpa.open-in-view=false
+#spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.H2Dialect
+
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:db;DB_CLOSE_DELAY=-1
+    username: h2test
+    password: h2test
+
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+
+# mockMvc 한글깨짐 이슈때문에 추가했지만 안됨
+#server:
+#  servlet:
+#    encoding:
+#      force-response: true
+logging:
+  level:
+    kopo.data.wordbook.app: trace

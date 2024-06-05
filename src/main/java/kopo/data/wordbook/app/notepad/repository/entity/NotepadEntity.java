@@ -37,12 +37,13 @@ public class NotepadEntity {
     @Lob
     private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
+//            (fetch = FetchType.LAZY)
     @JoinColumn(
 //            name = "REG_STUDENT_ID",
-//            nullable = false,
-            updatable = false,
-            insertable = false
+            nullable = false,
+            updatable = false
+//            insertable = false
     )
     private StudentEntity regStudent;
 
@@ -52,8 +53,9 @@ public class NotepadEntity {
 
     @ManyToOne
     @JoinColumn(
-//            name = "CHG_STUDENT_ID"
-//            nullable = false
+//            name = "CHG_STUDENT_ID",
+            nullable = false,
+            updatable = true
     )
     private StudentEntity chgStudent;
 

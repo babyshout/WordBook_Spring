@@ -142,7 +142,8 @@ public class LogInController {
         public static LoginSessionInformation of(StudentEntity entity) {
             return LoginSessionInformation.builder()
                     .studentId(entity.getStudentId())
-                    .email(entity.getEmail())
+                    .email(EncryptUtil.decAES128CBC(
+                            entity.getEmail()))
                     .name(entity.getName()).build();
         }
 
