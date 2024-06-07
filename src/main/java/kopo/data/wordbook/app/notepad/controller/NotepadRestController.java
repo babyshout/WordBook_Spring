@@ -35,6 +35,9 @@ public class NotepadRestController {
                 "/notepad/createNotepad";
         public static final String patchNotepad =
                 "/notepad/{notepadSeq}";
+
+        public static final String deleteNotepad =
+                "/notepad/{notepadSeq}";
     }
 
     /**
@@ -189,7 +192,7 @@ public class NotepadRestController {
      * @param body
      * @return
      */
-    @DeleteMapping(HandleUrl.patchNotepad)
+    @DeleteMapping(HandleUrl.deleteNotepad)
     public ResponseEntity deleteNotepad(
             HttpSession session,
             @PathVariable

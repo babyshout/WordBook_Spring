@@ -25,16 +25,27 @@ public class NotepadService implements INotepadService {
 
     @Override
     public GetNotepadResponse getNotepad_ByNotepadIdAndStudentId(Long notepadSeq, String studentId) {
-        Optional<NotepadEntity> optional = notepadRepository.findById(notepadSeq);
+//        Optional<NotepadEntity> optional = notepadRepository.findById(notepadSeq);
+        Optional<NotepadEntity> optional = notepadRepository.findByNotepadSeqAndRegStudent(
+                notepadSeq,
+                studentRepository.findById(studentId).get()
+                );
 
 
         if (optional.isEmpty()) {
+            log.warn("요청한 notepadSeq 가 비어있음!");
             return null;
         }
 
+        log.trace("option.get() -> {}", optional.get());
+
         NotepadEntity notepadEntity = optional.get();
-        // 요청한 사용자와 id 가 같지 않다면...
-        if (notepadEntity.getRegStudent().getStudentId().equals(studentId)) {
+//         요청한 사용자와 id 가 같지 않다면...
+        if (!notepadEntity.getRegStudent().getStudentId().equals(studentId)) {
+            log.trace("notepadEntity 의 regStudentId -> {}", notepadEntity.getRegStudent().getStudentId());
+            log.trace("파라미터로 넘어온 studentId -> {}", studentId);
+            log.trace("파라미터로 넘어온 studentId -> {}", studentId.equals(notepadEntity.getRegStudent().getStudentId()));
+            log.warn("요청한 사용자와 ID 가 같지 않음!");
             return null;
         }
 
@@ -68,7 +79,7 @@ public class NotepadService implements INotepadService {
 
         // studentId 가 맞는것만 남기도록 filtering 함!
         List<NotepadEntity> filteredList = list.stream()
-                .filter(notepadEntity -> !notepadEntity.getRegStudent().getStudentId().equals(studentId))
+                .filter(notepadEntity -> notepadEntity.getRegStudent().getStudentId().equals(studentId))
                 .collect(Collectors.toList());
 
         // 필터링된 리스트 로그찍기
@@ -132,10 +143,11 @@ public class NotepadService implements INotepadService {
 
     /**
      * notepadSeq 로 NotepadEntity 를 찾고, studentId를 통해 동일인이 만들었는지 확인
-     * @param notepadSeq NotepadEntity's PK
-     * @param studentId 해당 notepad 의 주인이 맞는지 검증
-     * @return if 문을 통과하면 리턴!
      *
+     * @param notepadSeq NotepadEntity's PK
+     * @param studentId  해당 notepad 의 주인이 맞는지 검증
+     * @return if 문을 통과하면 리턴!
+     * <p>
      * {{@link NotepadEntity}}
      */
     private NotepadEntity findAndValidate(Long notepadSeq, String studentId) {
