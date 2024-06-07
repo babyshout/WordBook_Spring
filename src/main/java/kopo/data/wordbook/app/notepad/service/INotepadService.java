@@ -16,4 +16,6 @@ public interface INotepadService {
     CreateNotepadResponse createNotepad(String content, String studentId);
 
     CreateNotepadResponse updateNotepad(Long notepadSeq, String content, String studentId);
+
+    CreateNotepadResponse deleteNotepad(Long notepadSeq, String studentId);
 }

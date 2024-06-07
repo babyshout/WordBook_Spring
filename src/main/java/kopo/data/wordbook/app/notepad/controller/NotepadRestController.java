@@ -55,7 +55,7 @@ public class NotepadRestController {
         LogInController.LoginSessionInformation sessionInfo =
                 getSessionInfo(session);
         // 유효한 세션이 아니면 HttpStatus.BAD_REQUEST return!!
-        if (validSession(session, sessionInfo)) {
+        if (!validSession(session, sessionInfo)) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -88,7 +88,7 @@ public class NotepadRestController {
         LogInController.LoginSessionInformation sessionInfo =
                 getSessionInfo(session);
         // 유효한 세션이 아니면 HttpStatus.BAD_REQUEST return!!
-        if (validSession(session, sessionInfo)) {
+        if (!validSession(session, sessionInfo)) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -129,7 +129,7 @@ public class NotepadRestController {
         LogInController.LoginSessionInformation sessionInfo =
                 getSessionInfo(session);
         // 유효한 세션이 아니면 HttpStatus.BAD_REQUEST return!!
-        if (validSession(session, sessionInfo)) {
+        if (!validSession(session, sessionInfo)) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -167,7 +167,7 @@ public class NotepadRestController {
         LogInController.LoginSessionInformation sessionInfo =
                 getSessionInfo(session);
         // 유효한 세션이 아니면 HttpStatus.BAD_REQUEST return!!
-        if (validSession(session, sessionInfo)) {
+        if (!validSession(session, sessionInfo)) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -189,7 +189,6 @@ public class NotepadRestController {
      * TODO 테스트 필요함!
      * @param session
      * @param notepadSeq
-     * @param body
      * @return
      */
     @DeleteMapping(HandleUrl.deleteNotepad)
@@ -197,26 +196,39 @@ public class NotepadRestController {
             HttpSession session,
             @PathVariable
 //                    ("notepadSeq") 없으면 자동으로 변수명으로 선언!
-            String notepadSeq,
-            @RequestBody @Valid UpdateNotepadRequest body
+            String notepadSeq
+//            @RequestBody UpdateNotepadRequest body
     ) {
         // session 정보를 가져옴
         LogInController.LoginSessionInformation sessionInfo =
                 getSessionInfo(session);
         // 유효한 세션이 아니면 HttpStatus.BAD_REQUEST return!!
-        if (validSession(session, sessionInfo)) {
+        if (!validSession(session, sessionInfo)) {
             return ResponseEntity.badRequest().build();
         }
 
         log.trace("notepadSeq -> {}", notepadSeq);
-        log.trace("request Body -> {}", body);
+//        log.trace("request Body -> {}", body);
 
+//        CreateNotepadResponse responseBody =
+//                notepadService.updateNotepad(
+//                        Long.valueOf(notepadSeq),
+//                        body.content,
+//                        sessionInfo.studentId()
+//                );
         CreateNotepadResponse responseBody =
-                notepadService.updateNotepad(
+                notepadService.deleteNotepad(
                         Long.valueOf(notepadSeq),
-                        body.content,
                         sessionInfo.studentId()
                 );
+
+        if (responseBody == null) {
+            return ResponseEntity.badRequest().body(
+                    CreateNotepadResponse.builder()
+                            .content("deleteNotepad 비어있음!!")
+                            .build()
+            );
+        }
 
         return ResponseEntity.ok(responseBody);
     }
@@ -234,7 +246,10 @@ public class NotepadRestController {
             HttpSession session,
             LogInController.LoginSessionInformation sessionInfo
     ) {
-        return session.isNew() || sessionInfo == null;
+        if (session.isNew() || sessionInfo == null) {
+            log.warn("validSession 아님!!!");
+        }
+        return !session.isNew() || !(sessionInfo == null);
     }
 
     @Builder

@@ -141,6 +141,38 @@ public class NotepadService implements INotepadService {
                 .build();
     }
 
+    @Override
+    public CreateNotepadResponse deleteNotepad(Long notepadSeq, String studentId) {
+        Optional<StudentEntity> student =  studentRepository.findById(studentId);
+
+        if (student.isEmpty()) {
+            // student 가 비어있을때 돌아갈 로직
+            throw new RuntimeException("student 가 비어있음");
+
+        }
+
+        Optional<NotepadEntity> notepad = notepadRepository.findByNotepadSeqAndRegStudent(notepadSeq, student.get());
+
+        if (notepad.isEmpty()) {
+            // notepad 가 비어있을때 돌아갈 로직
+            throw new RuntimeException("notepad 가 비어있음");
+        }
+        notepadRepository.deleteById(notepadSeq);
+
+        Boolean isDeleteSuccess =
+                notepadRepository.findByNotepadSeqAndRegStudent(notepadSeq, student.get()).isEmpty();
+
+        log.trace("isDeleteSuccess -> {}", isDeleteSuccess);
+
+        if (!isDeleteSuccess) {
+            throw new RuntimeException("isDeleteSuccess 가 false 임!!");
+        }
+
+        return CreateNotepadResponse.builder()
+
+                .build();
+    }
+
     /**
      * notepadSeq 로 NotepadEntity 를 찾고, studentId를 통해 동일인이 만들었는지 확인
      *
@@ -157,7 +189,7 @@ public class NotepadService implements INotepadService {
             throw new RuntimeException("해당 notepad 가 없음!");
         }
 
-        if (savingNotepad.get().getRegStudent().getStudentId().equals(studentId)) {
+        if (!savingNotepad.get().getRegStudent().getStudentId().equals(studentId)) {
             throw new RuntimeException("notepad 의 studentId 와 session 의 studentId 비일치");
         }
 
