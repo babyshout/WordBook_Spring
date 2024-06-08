@@ -2,15 +2,13 @@ package kopo.data.wordbook.app.word.rest.client.impl;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.List;
 
 //@Getter
 //@Setter
 @Data
-public class ApiResponse {
+public class StdictKoreanSearchApiResponse {
 
     private Channel channel;
 

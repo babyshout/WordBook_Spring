@@ -85,8 +85,7 @@ public class SearchRestClient implements ISearchRestClient {
                 stdictRequestUrl +
                         "?" + stdictKey +
                         "&q=" + encodedQueryWord +
-                        "&" + stdictReqTypeJson
-                ;
+                        "&" + stdictReqTypeJson;
         log.trace("uriToQuery -> {}", uriToQuery);
 
 //        UriComponents = UriComponentsBuilder.fromHttpUrl(stdictRequestUrl)
@@ -107,14 +106,14 @@ public class SearchRestClient implements ISearchRestClient {
 
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            ApiResponse apiResponseDTO = objectMapper.readValue(responseBodyToString, ApiResponse.class);
+            StdictKoreanSearchApiResponse apiResponse =
+                    objectMapper.readValue(responseBodyToString, StdictKoreanSearchApiResponse.class);
 
-            log.trace("apiResponseDTO -> {}", apiResponseDTO);
+            log.trace("apiResponse -> {}", apiResponse);
         } catch (JsonProcessingException e) {
             log.warn("Json parsing 중 예외 발생!!!");
             throw new RuntimeException(e);
         }
-
 
 
 //        JSONParser jsonParser = new JSONParser(responseBodyToString);

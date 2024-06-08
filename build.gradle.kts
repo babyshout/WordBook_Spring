@@ -23,6 +23,8 @@ repositories {
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+
 	implementation("org.springframework.boot:spring-boot-starter-mail")
 	// 타임리프 사용 안함!!
 //	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
