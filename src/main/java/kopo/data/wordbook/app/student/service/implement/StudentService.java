@@ -152,7 +152,7 @@ public class StudentService implements IStudentService {
     }
 
     @Override
-    public SignupController.EmailVerificationCodeResult getEmailVerificationCode(String email) {
+    public SignupController.EmailVerificationCodeResult getEmailVerificationCodeWhenSignup(String email) {
         String code = randomIntegerCodeGenerator();
 
         Optional<StudentEntity> entity = Optional.ofNullable(
@@ -169,9 +169,9 @@ public class StudentService implements IStudentService {
                     .isEmailExists(true).build();
         }
 
-//        mailService.doSendMail(email,
-//                "이메일 인증코드",
-//                "회원님의 인증코드는 [" + randomIntegerCodeGenerator() + "] 입니다.")
+        mailService.doSendMail(email,
+                "이메일 인증코드",
+                "회원님의 인증코드는 [" + code + "] 입니다.");
         log.trace("이메일이 없습니다!!");
         return SignupController.EmailVerificationCodeResult.builder()
                 .code(code)

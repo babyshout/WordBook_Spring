@@ -169,7 +169,7 @@ public class LogInController {
         return ResponseEntity.ok("login session info deleted!");
     }
 
-    private LoginSessionInformation getLoginInformationFromSession(HttpSession session) {
+    public static LoginSessionInformation getLoginInformationFromSession(HttpSession session) {
         log.trace("loginInfoName : {}", LoginSessionInformation.class.getName());
         return (LoginSessionInformation)
                 session.getAttribute(LoginSessionInformation.class.getName());

@@ -31,5 +31,5 @@ public interface IStudentService {
      */
     ResetPasswordForIdResult resetPasswordForId(String studentId, String name, String email);
 
-    SignupController.EmailVerificationCodeResult getEmailVerificationCode(String email);
+    SignupController.EmailVerificationCodeResult getEmailVerificationCodeWhenSignup(String email);
 }
