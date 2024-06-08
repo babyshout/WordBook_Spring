@@ -37,6 +37,9 @@ dependencies {
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 	annotationProcessor("org.projectlombok:lombok")
 
+	// production code 에서 json 만질 일이 있어서 추가..
+//	implementation("com.google.code.gson:gson:2.11.0")
+
 	// 테스트코드에서 사용하고싶어서 추가..
     testCompileOnly("org.projectlombok:lombok")
 	testAnnotationProcessor("org.projectlombok:lombok")
