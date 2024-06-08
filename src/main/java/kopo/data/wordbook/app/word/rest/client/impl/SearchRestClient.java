@@ -1,5 +1,7 @@
 package kopo.data.wordbook.app.word.rest.client.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import kopo.data.wordbook.app.word.rest.client.ISearchRestClient;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestTemplate;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -30,7 +33,6 @@ public class SearchRestClient implements ISearchRestClient {
 
         log.error("searchWord -> naverSearchRestClient -> {}", naverSearchRestClient);
 
-//        log.error(naverSearchRestClient.)
 
         String encodedQueryWord = URLEncoder.encode(queryWord, StandardCharsets.UTF_8);
 
@@ -53,13 +55,6 @@ public class SearchRestClient implements ISearchRestClient {
 //                naverSearchRestClient.get().retrieve().toEntity(String.class);
 
         log.error(entity.getBody().toString());
-
-//        RestTemplate = RestTemplateBuilder
-//        RestClient.builder().
-//        RestClientBuilderConfigurer
-//        ElasticsearchProperties.Restclient
-//        RestClientCustomizer
-//        RestClient
     }
 
 
@@ -91,10 +86,10 @@ public class SearchRestClient implements ISearchRestClient {
                         "?" + stdictKey +
                         "&q=" + encodedQueryWord +
                         "&" + stdictReqTypeJson
-//                                        +
-//                                        "&display=100"
                 ;
         log.trace("uriToQuery -> {}", uriToQuery);
+
+//        UriComponents = UriComponentsBuilder.fromHttpUrl(stdictRequestUrl)
 
         ResponseEntity<String> entity =
                 stdictKoreanSearchRestClient.get()
@@ -104,7 +99,33 @@ public class SearchRestClient implements ISearchRestClient {
         log.trace("entity.getBody().toString() -> {}",
                 entity.getBody().toString());
 
-        String responseBody = entity.getBody().toString();
-//        Gson
+
+        RestTemplate restTemplate = new RestTemplate();
+
+
+        String responseBodyToString = entity.getBody().toString();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            ApiResponse apiResponseDTO = objectMapper.readValue(responseBodyToString, ApiResponse.class);
+
+            log.trace("apiResponseDTO -> {}", apiResponseDTO);
+        } catch (JsonProcessingException e) {
+            log.warn("Json parsing 중 예외 발생!!!");
+            throw new RuntimeException(e);
+        }
+
+
+
+//        JSONParser jsonParser = new JSONParser(responseBodyToString);
+//        try {
+//            LinkedHashMap<String, Object> channel = jsonParser.parseObject();
+//            log.trace("channel -> {}", channel);
+//            log.trace("channel.get(\"channel\") -> {}", channel.get("channel"));
+//
+//
+//        } catch (ParseException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 }
