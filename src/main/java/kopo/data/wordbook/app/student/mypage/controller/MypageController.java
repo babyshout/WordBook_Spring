@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import kopo.data.wordbook.app.student.controller.rest.LogInController;
 import kopo.data.wordbook.app.student.mypage.controller.request.PatchStudentInfoRequest;
 import kopo.data.wordbook.app.student.mypage.controller.request.PatchStudentPasswordRequest;
+import kopo.data.wordbook.app.student.mypage.controller.request.PostDeleteStudentAccountRequest;
 import kopo.data.wordbook.app.student.mypage.response.EmailAuthCodeResponse;
 import kopo.data.wordbook.app.student.mypage.response.StudentInfo;
 import kopo.data.wordbook.app.student.mypage.service.IMypageService;
@@ -31,6 +32,8 @@ public class MypageController {
         static public final String getEmailAuthCode = "/getEmailAuthCode";
         static public final String patchStudentInfo = "/studentInfo";
         static public final String patchStudentPassword = "/studentPassword";
+
+        static public final String postDeleteStudentAccount = "/deleteStudentAccount";
     }
 
     @GetMapping(HandleUrl.getStudentInfoBySession)
@@ -96,7 +99,7 @@ public class MypageController {
     }
 
     @PatchMapping(HandleUrl.patchStudentPassword)
-    public ResponseEntity patchStudentPassword(
+    public ResponseEntity<String> patchStudentPassword(
             HttpSession session,
             @RequestBody @Valid PatchStudentPasswordRequest request
     ) {
@@ -104,8 +107,25 @@ public class MypageController {
         log.trace("request -> {}", request);
 //        throw new RuntimeException("runTime Exception!!");
         LogInController.LoginSessionInformation loginSessionInfo = getLoginInformationFromSession(session);
-         mypageService.patchStudentPassword(request, loginSessionInfo.studentId());
+        Boolean result = mypageService.patchStudentPassword(request, loginSessionInfo.studentId());
+        log.trace("service calling result -> {}", result);
 
-        return null;
+        return ResponseEntity.ok("password 변경 성공");
+    }
+
+    @PostMapping(HandleUrl.postDeleteStudentAccount)
+    public ResponseEntity<String> postDeleteStudentAccount(
+            HttpSession session,
+            @RequestBody @Valid PostDeleteStudentAccountRequest request
+    ) {
+        log.trace("request -> {}", request);
+        LogInController.LoginSessionInformation info = getLoginInformationFromSession(session);
+
+        Boolean result = mypageService.deleteStudentAccount(request, info.studentId());
+        log.trace("service calling result -> {}", result);
+
+        session.invalidate();
+
+        return ResponseEntity.ok("student 삭제 성공");
     }
 }

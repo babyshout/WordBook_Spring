@@ -2,6 +2,7 @@ package kopo.data.wordbook.app.student.mypage.service.impl;
 
 import kopo.data.wordbook.app.student.mypage.controller.request.PatchStudentInfoRequest;
 import kopo.data.wordbook.app.student.mypage.controller.request.PatchStudentPasswordRequest;
+import kopo.data.wordbook.app.student.mypage.controller.request.PostDeleteStudentAccountRequest;
 import kopo.data.wordbook.app.student.mypage.response.EmailAuthCodeResponse;
 import kopo.data.wordbook.app.student.mypage.response.StudentInfo;
 import kopo.data.wordbook.app.student.mypage.service.IMypageService;
@@ -133,7 +134,36 @@ public class MypageService implements IMypageService {
 
         log.trace("saved.equals(byIdAndPassword) -> {}", saved.equals(byIdAndPassword));
 
-        return null;
+        return true;
+    }
+
+    @Override
+    public Boolean deleteStudentAccount(PostDeleteStudentAccountRequest request, String studentId) {
+        String deleteConfirmMessage = request.deleteConfirmMessage();
+        String nowPasswordEncoded = EncryptUtil.encHashSHA256(request.nowPassword());
+
+        final String deleteConfirmMessageMustEqualThis = "탈퇴하겠습니다";
+
+        if (!deleteConfirmMessage.equals(deleteConfirmMessageMustEqualThis)) {
+            throw new RuntimeException("deleteConfirmMessage 가 다름!!");
+        }
+
+        StudentEntity studentByIdAndPassword = Optional.ofNullable(studentRepository.findByStudentIdAndPassword(studentId, nowPasswordEncoded)
+        ).orElseThrow(() -> new RuntimeException("student findByIdAndPassword 실패!!"));
+
+        studentRepository.delete(studentByIdAndPassword);
+
+        Optional<StudentEntity> studentByIdAndPasswordAfterDelete =
+                Optional.ofNullable(studentRepository.findByStudentIdAndPassword(
+                        studentId, nowPasswordEncoded)
+        );
+
+        if (studentByIdAndPasswordAfterDelete.isPresent()) {
+            throw new RuntimeException("삭제되지 않음!!!");
+        }
+
+
+        return true;
     }
 
 
