@@ -76,11 +76,14 @@ public class WordDocument {
                         .targetCode(item.getTargetCode()).build();
                 String wordNameInItem =
                         apiResponse.getChannel().getItem().get(0).getWord();
-                if (!wordName.equals(wordNameInItem)) {
-                    log.error("wordName and wordNameInItem is not EQUAL!!!!!!!!!!");
-                }
 
                 log.trace("wordDetail -> {}", wordDetail);
+
+                if (!wordName.equals(wordNameInItem)) {
+                    log.error("wordName and wordNameInItem is not EQUAL!!!!!!!!!!");
+                    return;
+                }
+
                 wordDetailListFromApiResponse.add(wordDetail);
             });
             log.trace("wordDetailListFromApiResponse -> {}", wordDetailListFromApiResponse);
