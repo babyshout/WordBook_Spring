@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import kopo.data.wordbook.app.word.repository.WordRepository;
 import kopo.data.wordbook.app.word.repository.document.WordDocument;
-import kopo.data.wordbook.app.word.rest.client.ISearchRestClient;
+import kopo.data.wordbook.app.word.rest.client.ISearchWordRestClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +23,7 @@ import java.util.Optional;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class SearchRestClient implements ISearchRestClient {
+public class SearchWordRestClient implements ISearchWordRestClient {
 
     private final WordRepository wordRepository;
 
