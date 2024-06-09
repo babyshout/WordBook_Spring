@@ -9,9 +9,7 @@ import kopo.data.wordbook.app.word.rest.client.ISearchRestClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -78,7 +76,7 @@ public class SearchRestClient implements ISearchRestClient {
     private final RestClient stdictKoreanSearchRestClient;
 
     @Override
-    public void searchStdictWord(String queryWord) {
+    public WordDocument searchStdictWord(String queryWord) {
 
         log.error("searchStdictWord -> stdictKoreanSearchRestClient -> {}", stdictKoreanSearchRestClient);
 
@@ -115,6 +113,8 @@ public class SearchRestClient implements ISearchRestClient {
 
         String responseBodyToString = entity.getBody().toString();
 
+        // 아래 중복된 wordName 할때.. 로그찍을라고 만듬 + 리턴할때 사용
+        WordDocument saved = null;
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             StdictKoreanSearchApiResponse apiResponse =
@@ -126,44 +126,36 @@ public class SearchRestClient implements ISearchRestClient {
             log.trace("savingWord -> {}", savingWord);
 
 
-            // 아래 중복된 wordName 할때.. 로그찍을라고 만듬
-            WordDocument saved = null;
             try {
                 saved = wordRepository.save(savingWord);
             } catch (DuplicateKeyException e) {
-                log.warn("mongoDB insert 도중 DuplicateKeyException 발생!!");
+                // log.method("String", Throwable) 하면.. String 출력하고, stacktrace 출력함
+                log.warn("mongoDB insert 도중 DuplicateKeyException 발생!!", e);
+
                 WordDocument byWordName = Optional.ofNullable(
                         wordRepository.findByWordName(savingWord.getWordName())
-//                ).orElseThrow(()
-//                        ->
-//                        new RuntimeException("mongoDB insert 도중 중복되는 wordName 으로 인해 findByWordName 했지만, 찾지 못함"));
                 ).orElseThrow(()
                         ->
                         new RuntimeException("mongoDB insert 도중 중복되는 wordName 으로 인해 findByWordName 했지만, 찾지 못함"));
+//                ).orElseThrow(()
+//                        ->
+//                        new DuplicateKeyException("mongoDB insert 도중 중복되는 wordName 으로 인해 findByWordName 했지만, 찾지 못함"));
 //                log.warn(e.st);
 
                 List<WordDocument.WordDetail> wordDetails = WordDocument.WordDetail.of(apiResponse);
                 byWordName.setWordDetailList(wordDetails);
 
-               saved = wordRepository.save(byWordName);
+                saved = wordRepository.save(byWordName);
             } finally {
                 log.trace("saved by duplicated wordName -> {}", saved);
             }
         } catch (JsonProcessingException e) {
-            log.warn("Json parsing 중 예외 발생!!!");
+            log.warn("Json parsing 중 예외 발생!!!", e);
             throw new RuntimeException(e);
         }
 
 
-//        JSONParser jsonParser = new JSONParser(responseBodyToString);
-//        try {
-//            LinkedHashMap<String, Object> channel = jsonParser.parseObject();
-//            log.trace("channel -> {}", channel);
-//            log.trace("channel.get(\"channel\") -> {}", channel.get("channel"));
-//
-//
-//        } catch (ParseException e) {
-//            throw new RuntimeException(e);
-//        }
+        // 위에서 Exception 생기면.. 애초에 여기까지 오지도 못함
+        return saved;
     }
 }
