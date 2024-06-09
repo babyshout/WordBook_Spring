@@ -124,7 +124,7 @@ public class LogInController {
         );
     }
 
-    private void setLoginSessionInfoToSession(LoginSessionInformation info, HttpSession session) {
+    static public void setLoginSessionInfoToSession(LoginSessionInformation info, HttpSession session) {
         log.trace("loginInfoName : {}", LoginSessionInformation.class.getName());
 
         session.setAttribute(LoginSessionInformation.class.getName(),

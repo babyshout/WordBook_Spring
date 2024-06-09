@@ -6,6 +6,8 @@ import kopo.data.wordbook.app.student.mypage.controller.request.PatchStudentInfo
 import kopo.data.wordbook.app.student.mypage.response.EmailAuthCodeResponse;
 import kopo.data.wordbook.app.student.mypage.response.StudentInfo;
 import kopo.data.wordbook.app.student.mypage.service.IMypageService;
+import kopo.data.wordbook.app.student.repository.entity.StudentEntity;
+import kopo.data.wordbook.app.student.service.IStudentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,7 @@ import static kopo.data.wordbook.app.student.controller.rest.LogInController.get
 public class MypageController {
 
     private final IMypageService mypageService;
+    private final IStudentService studentService;
 
     public static class HandleUrl {
         static public final String getStudentInfoBySession = "/getStudentInfoBySession";
@@ -81,7 +84,11 @@ public class MypageController {
 
         if (!isSuccess) {
             log.warn("isSuccess -> {}", isSuccess);
+            return ResponseEntity.internalServerError().build();
         }
+        StudentEntity student = studentService.getStudentById(loginSessionInfo.studentId());
+        LogInController.LoginSessionInformation info = LogInController.LoginSessionInformation.of(student);
+        LogInController.setLoginSessionInfoToSession(info, session);
         return ResponseEntity.ok().build();
     }
 }

@@ -7,6 +7,7 @@ import kopo.data.wordbook.app.student.mypage.service.IMypageService;
 import kopo.data.wordbook.app.student.repository.StudentRepository;
 import kopo.data.wordbook.app.student.repository.entity.StudentEntity;
 import kopo.data.wordbook.common.mail.IMailService;
+import kopo.data.wordbook.common.util.EncryptUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -72,25 +73,31 @@ public class MypageService implements IMypageService {
         }
         StudentEntity studentById = byId.get();
 
-        StudentEntity toSaveStudent = StudentEntity.builder()
-                .studentId(studentById.getStudentId())
-                .name(request.name())
-                .email(request.email())
-                .build();
+//        StudentEntity toSaveStudent = StudentEntity.builder()
+//                .studentId(studentById.getStudentId())
+//                .password(studentById.getPassword())
+//                .name(request.name())
+//                .email(request.email())
+//                .build();
 
-        log.trace("studentById -> {}", studentById);
-        log.trace("toSaveStudent -> {}", toSaveStudent);
+        log.trace("studentById before change -> {}", studentById);
+//        log.trace("toSaveStudent -> {}", toSaveStudent);
 
-        StudentEntity savedStudent = studentRepository.save(toSaveStudent);
+        studentById.setName(request.name());
+        studentById.setEmail(EncryptUtil.encAES128CBC(request.email()));
+
+        log.trace("studentById after change -> {}", studentById);
+//        StudentEntity savedStudent = studentRepository.save(toSaveStudent);
+        StudentEntity savedStudent = studentRepository.save(studentById);
         log.trace("savedStudent -> {}", savedStudent);
 
         log.error("log 한번 더 찍음!!");
         log.trace("studentById -> {}", studentById);
-        log.trace("toSaveStudent -> {}", toSaveStudent);
+//        log.trace("toSaveStudent -> {}", toSaveStudent);
 
 
 
-        return null;
+        return true;
     }
 
 

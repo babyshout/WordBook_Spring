@@ -35,8 +35,10 @@ public class StudentEntity {
     @NonNull
     String password;
 
+    @Setter
     @Column(name = "EMAIL", length = 100, nullable = false)
     String email;
+    @Setter
     @Column(name = "NAME", length = 20, nullable = false)
     String name;
 
