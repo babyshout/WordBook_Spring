@@ -20,6 +20,7 @@ class SearchRestClientTest {
     @Test
     void searchStdictWord() {
 
+
         searchRestClient.searchStdictWord("주식");
 
     }

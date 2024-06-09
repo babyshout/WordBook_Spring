@@ -29,7 +29,7 @@ spring:
 
 
   profiles:
-    include: naver-mail, word-api
+    include: naver-mail, word-api, ec2-mongodb
 # mockMvc 한글깨짐 이슈때문에 추가했지만 안됨
 #server:
 #  servlet:

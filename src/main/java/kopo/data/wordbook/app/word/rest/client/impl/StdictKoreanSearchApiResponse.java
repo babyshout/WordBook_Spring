@@ -36,10 +36,10 @@ public class StdictKoreanSearchApiResponse {
         public static class Item {
 
             @JsonProperty("sup_no")
-            private String supNo;
+            private Integer supNo;
             private String word;
             @JsonProperty("target_code")
-            private String targetCode;
+            private Integer targetCode;
             private Sense sense;
             private String pos;
 

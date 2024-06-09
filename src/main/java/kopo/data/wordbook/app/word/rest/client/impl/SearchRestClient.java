@@ -3,22 +3,31 @@ package kopo.data.wordbook.app.word.rest.client.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
+import kopo.data.wordbook.app.word.repository.WordRepository;
+import kopo.data.wordbook.app.word.repository.document.WordDocument;
 import kopo.data.wordbook.app.word.rest.client.ISearchRestClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Optional;
 
-@Configuration
+@Component
 @Slf4j
 @RequiredArgsConstructor
 public class SearchRestClient implements ISearchRestClient {
+
+    private final WordRepository wordRepository;
 
 
     @Value("${naver.api.search.word.request_url.json}")
@@ -75,6 +84,8 @@ public class SearchRestClient implements ISearchRestClient {
 
         String encodedQueryWord = URLEncoder.encode(queryWord, StandardCharsets.UTF_8);
 
+//        new MongoTemplate()
+
         log.trace("queryWord -> {}", queryWord);
         log.trace("encodedQueryWord -> {}", encodedQueryWord);
 
@@ -110,6 +121,34 @@ public class SearchRestClient implements ISearchRestClient {
                     objectMapper.readValue(responseBodyToString, StdictKoreanSearchApiResponse.class);
 
             log.trace("apiResponse -> {}", apiResponse);
+
+            WordDocument savingWord = WordDocument.of(apiResponse);
+            log.trace("savingWord -> {}", savingWord);
+
+
+            // 아래 중복된 wordName 할때.. 로그찍을라고 만듬
+            WordDocument saved = null;
+            try {
+                saved = wordRepository.save(savingWord);
+            } catch (DuplicateKeyException e) {
+                log.warn("mongoDB insert 도중 DuplicateKeyException 발생!!");
+                WordDocument byWordName = Optional.ofNullable(
+                        wordRepository.findByWordName(savingWord.getWordName())
+//                ).orElseThrow(()
+//                        ->
+//                        new RuntimeException("mongoDB insert 도중 중복되는 wordName 으로 인해 findByWordName 했지만, 찾지 못함"));
+                ).orElseThrow(()
+                        ->
+                        new RuntimeException("mongoDB insert 도중 중복되는 wordName 으로 인해 findByWordName 했지만, 찾지 못함"));
+//                log.warn(e.st);
+
+                List<WordDocument.WordDetail> wordDetails = WordDocument.WordDetail.of(apiResponse);
+                byWordName.setWordDetailList(wordDetails);
+
+               saved = wordRepository.save(byWordName);
+            } finally {
+                log.trace("saved by duplicated wordName -> {}", saved);
+            }
         } catch (JsonProcessingException e) {
             log.warn("Json parsing 중 예외 발생!!!");
             throw new RuntimeException(e);

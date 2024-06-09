@@ -29,6 +29,8 @@ public class CorsConfigurer {
         corsConfig.addAllowedMethod(HttpMethod.DELETE);
         corsConfig.addAllowedMethod(HttpMethod.PATCH);
         corsConfig.addAllowedHeader("*");
+
+        log.error("cors getAllow Method : " + corsConfig.getAllowedMethods().toString());
 //        corsConfig.addAllowedOrigin("http://localhost:5173/");
         /*
         When allowCredentials is true,
