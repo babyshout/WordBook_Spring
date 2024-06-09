@@ -1,8 +1,10 @@
 package kopo.data.wordbook.app.student.mypage.controller;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import kopo.data.wordbook.app.student.controller.rest.LogInController;
 import kopo.data.wordbook.app.student.mypage.controller.request.PatchStudentInfoRequest;
+import kopo.data.wordbook.app.student.mypage.controller.request.PatchStudentPasswordRequest;
 import kopo.data.wordbook.app.student.mypage.response.EmailAuthCodeResponse;
 import kopo.data.wordbook.app.student.mypage.response.StudentInfo;
 import kopo.data.wordbook.app.student.mypage.service.IMypageService;
@@ -28,6 +30,7 @@ public class MypageController {
         static public final String getStudentInfoBySession = "/getStudentInfoBySession";
         static public final String getEmailAuthCode = "/getEmailAuthCode";
         static public final String patchStudentInfo = "/studentInfo";
+        static public final String patchStudentPassword = "/studentPassword";
     }
 
     @GetMapping(HandleUrl.getStudentInfoBySession)
@@ -90,5 +93,19 @@ public class MypageController {
         LogInController.LoginSessionInformation info = LogInController.LoginSessionInformation.of(student);
         LogInController.setLoginSessionInfoToSession(info, session);
         return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping(HandleUrl.patchStudentPassword)
+    public ResponseEntity patchStudentPassword(
+            HttpSession session,
+            @RequestBody @Valid PatchStudentPasswordRequest request
+    ) {
+
+        log.trace("request -> {}", request);
+//        throw new RuntimeException("runTime Exception!!");
+        LogInController.LoginSessionInformation loginSessionInfo = getLoginInformationFromSession(session);
+         mypageService.patchStudentPassword(request, loginSessionInfo.studentId());
+
+        return null;
     }
 }

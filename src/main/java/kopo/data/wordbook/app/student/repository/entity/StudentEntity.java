@@ -31,6 +31,8 @@ public class StudentEntity {
     @Id
     @Column(name = "STUDENT_ID", length = 20, nullable = false)
     String studentId;
+
+    @Setter
     @Column(name = "PASSWORD", length = 100, nullable = false)
     @NonNull
     String password;

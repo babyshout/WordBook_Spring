@@ -1,6 +1,7 @@
 package kopo.data.wordbook.app.student.mypage.service.impl;
 
 import kopo.data.wordbook.app.student.mypage.controller.request.PatchStudentInfoRequest;
+import kopo.data.wordbook.app.student.mypage.controller.request.PatchStudentPasswordRequest;
 import kopo.data.wordbook.app.student.mypage.response.EmailAuthCodeResponse;
 import kopo.data.wordbook.app.student.mypage.response.StudentInfo;
 import kopo.data.wordbook.app.student.mypage.service.IMypageService;
@@ -96,8 +97,43 @@ public class MypageService implements IMypageService {
 //        log.trace("toSaveStudent -> {}", toSaveStudent);
 
 
-
         return true;
+    }
+
+    @Override
+    public Boolean patchStudentPassword(PatchStudentPasswordRequest request, String studentId) {
+
+        String nowPasswordEncoded = EncryptUtil.encHashSHA256(request.nowPassword());
+        String newPasswordEncoded = EncryptUtil.encHashSHA256(request.newPassword());
+        String newPasswordConfirmEncoded = EncryptUtil.encHashSHA256(request.newPasswordConfirm());
+
+        log.trace("nowPasswordEncoded -> {}", nowPasswordEncoded);
+        log.trace("newPasswordEncoded -> {}", newPasswordEncoded);
+        log.trace("newPasswordConfirmEncoded -> {}", newPasswordConfirmEncoded);
+
+        if (!request.newPassword().equals(
+                request.newPasswordConfirm())) {
+            throw new RuntimeException("newPassword 가 newPasswordConfirm 과 다름");
+        }
+        if (!newPasswordEncoded.equals(newPasswordConfirmEncoded)) {
+            throw new RuntimeException("newPasswordEncoded 가 newPasswordConfirmEncoded 과 다름");
+        }
+
+        StudentEntity byIdAndPassword = Optional.ofNullable(studentRepository.findByStudentIdAndPassword(studentId, nowPasswordEncoded)
+        ).orElseThrow(() -> new RuntimeException("주어진 session 의 studentId 와 nowPassword 로 entity 를 찾지 못함"));
+
+//        log.trace("byIdAndPassword -> {}", byIdAndPassword);
+
+        byIdAndPassword.setPassword(newPasswordEncoded);
+        log.trace("byIdAndPassword password changed -> {}", byIdAndPassword);
+
+        StudentEntity saved = studentRepository.save(byIdAndPassword);
+
+        log.trace("saved entity -> {}", saved);
+
+        log.trace("saved.equals(byIdAndPassword) -> {}", saved.equals(byIdAndPassword));
+
+        return null;
     }
 
 
