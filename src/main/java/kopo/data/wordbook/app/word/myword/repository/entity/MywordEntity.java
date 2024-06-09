@@ -50,7 +50,8 @@ public class MywordEntity {
 //                            referencedColumnName = "id")
 //            }
     )
-    private List<String> something = new ArrayList<>();
+    @Setter
+    private List<String> wordNameList = new ArrayList<>();
 
     @LastModifiedDate
     private LocalDate regDate;

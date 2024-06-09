@@ -64,6 +64,7 @@ public class StudentEntity {
             orphanRemoval = true,
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY,
+//            fetch = FetchType.EAGER,
             mappedBy = "student"
     )
     List<MywordEntity> mywordEntityList = new ArrayList<>();
