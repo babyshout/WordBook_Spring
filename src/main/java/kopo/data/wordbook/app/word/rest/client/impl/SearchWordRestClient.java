@@ -2,6 +2,7 @@ package kopo.data.wordbook.app.word.rest.client.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import jakarta.annotation.Resource;
 import kopo.data.wordbook.app.word.repository.WordRepository;
 import kopo.data.wordbook.app.word.repository.document.WordDocument;
@@ -9,6 +10,7 @@ import kopo.data.wordbook.app.word.rest.client.ISearchWordRestClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.json.GsonJsonParser;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -18,7 +20,8 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.Objects;
 
 @Component
 @Slf4j
@@ -29,16 +32,16 @@ public class SearchWordRestClient implements ISearchWordRestClient {
 
 
     @Value("${naver.api.search.word.request_url.json}")
-    private String naverSearchRequestUrlJson;
+    private String naverSearchEncycRequestUrlJson;
     @Resource
-//            (name = "naverSearchRestClient")
-    private final RestClient naverSearchRestClient;
+//            (name = "naverSearchEncycRestClient")
+    private final RestClient naverSearchEncycRestClient;
 
 
     @Override
-    public void searchNaverEncWord(String queryWord) {
+    public void searchNaverEncycWord(String queryWord) {
 
-        log.error("searchWord -> naverSearchRestClient -> {}", naverSearchRestClient);
+        log.error("searchWord -> naverSearchEncycRestClient -> {}", naverSearchEncycRestClient);
 
 
         String encodedQueryWord = URLEncoder.encode(queryWord, StandardCharsets.UTF_8);
@@ -47,7 +50,7 @@ public class SearchWordRestClient implements ISearchWordRestClient {
         log.error("encodedQueryWord -> {}", encodedQueryWord);
 
         String uriToQuery =
-                naverSearchRequestUrlJson +
+                naverSearchEncycRequestUrlJson +
                         "?query=" + encodedQueryWord
 //                                        +
 //                                        "&display=100"
@@ -55,15 +58,81 @@ public class SearchWordRestClient implements ISearchWordRestClient {
         log.trace("uriToQuery -> {}", uriToQuery);
 
         ResponseEntity<String> entity =
-                naverSearchRestClient.get()
+                naverSearchEncycRestClient.get()
                         .uri(uriToQuery)
                         .retrieve().toEntity(String.class);
 // ResponseEntity<String> entity =
-//                naverSearchRestClient.get().retrieve().toEntity(String.class);
+//                naverSearchEncycRestClient.get().retrieve().toEntity(String.class);
 
         log.error(entity.getBody().toString());
     }
 
+
+    @Value("${naver.api.search.errata.request_url.json}")
+    private String naverSearchErrataRequestUrlJson;
+
+    @Resource
+//            (name = "naverSearchErrataRestClient")
+    private final RestClient naverSearchErrataRestClient;
+
+    /**
+     * 한글로 써야되는 단어를 영어로 쳤을때.. 한글로 변환해서 돌려줌
+     *
+     * @param queryWord
+     * @return
+     */
+    @Override
+    public String searchNaverErrataWord(String queryWord) {
+
+        log.error("searchWord -> naverSearchErrataRestClient -> {}",
+                naverSearchErrataRestClient);
+
+
+        String encodedQueryWord =
+                URLEncoder.encode(queryWord, StandardCharsets.UTF_8);
+
+        log.trace("queryWord -> {}", queryWord);
+        log.error("encodedQueryWord -> {}", encodedQueryWord);
+
+        String uriToQuery =
+                naverSearchErrataRequestUrlJson +
+                        "?query=" + encodedQueryWord
+                ;
+        log.trace("uriToQuery -> {}", uriToQuery);
+
+//        ResponseEntity<String> entity =
+//                naverSearchErrataRestClient.get()
+//                        .uri(uriToQuery)
+//                        .retrieve().toEntity(String.class);
+
+//        String entityBodyString = entity.getBody().toString();
+//        log.error("entityBodyString -> {}", entityBodyString);
+
+        record MyApiResponse(
+                String errata
+        ) {
+        }
+
+        ResponseEntity<MyApiResponse> entity1 =
+                naverSearchErrataRestClient.get()
+                        .uri(uriToQuery)
+                        .retrieve().toEntity(MyApiResponse.class);
+
+//        GsonJsonParser gsonJsonParser = new GsonJsonParser();
+
+//        Map<String, Object> stringObjectMap = gsonJsonParser.parseMap(entityBodyString);
+//        log.trace("stringObjectMap -> {}", stringObjectMap);
+//        log.trace("stringObjectMap.get(\"errata\") -> {}", stringObjectMap.get("errata"));
+
+        log.trace("entity1.getBody() -> {}", entity1.getBody());
+
+
+//        String errataString = (String) stringObjectMap.get("errata");
+        String errataString = Objects.requireNonNull(entity1.getBody()).errata();
+
+        return errataString.isEmpty() ? null : errataString;
+//        return errataString.isEmpty() ? null : errataString;
+    }
 
     @Value("${word.stdict.korean.go.kr.key}")
     private String stdictKey;
@@ -138,10 +207,10 @@ public class SearchWordRestClient implements ISearchWordRestClient {
 //                        ->
 //                        new RuntimeException("mongoDB insert 도중 중복되는 wordName 으로 인해 findByWordName 했지만, 찾지 못함"));
                 WordDocument byWordName = wordRepository.findByWordName(
-                                savingWord.getWordName()
-                        ).orElseThrow(()
-                                ->
-                                new RuntimeException("mongoDB insert 도중 중복되는 wordName 으로 인해 findByWordName 했지만, 찾지 못함"));
+                        savingWord.getWordName()
+                ).orElseThrow(()
+                        ->
+                        new RuntimeException("mongoDB insert 도중 중복되는 wordName 으로 인해 findByWordName 했지만, 찾지 못함"));
 //                ).orElseThrow(()
 //                        ->
 //                        new DuplicateKeyException("mongoDB insert 도중 중복되는 wordName 으로 인해 findByWordName 했지만, 찾지 못함"));

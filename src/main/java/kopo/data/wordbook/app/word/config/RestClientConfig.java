@@ -2,46 +2,70 @@ package kopo.data.wordbook.app.word.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.client.RestTemplate;
 
 @Configuration
 @Slf4j
 public class RestClientConfig {
     @Value("${naver.api.search.word.request_url.json}")
-    private String requestUrlJson;
-    @Value("${naver.api.search.word.X-Naver-Client-Id.value}")
+    private String naverEncycRequestUrlJson;
+    @Value("${naver.api.X-Naver-Client-Id.value}")
     private String clientIdValue;
-    @Value("${naver.api.search.word.X-Naver-Client-Id.header}")
+    @Value("${naver.api.X-Naver-Client-Id.header}")
     private String clientIdHeader;
-    @Value("${naver.api.search.word.X-Naver-Client-Secret.value}")
+    @Value("${naver.api.X-Naver-Client-Secret.value}")
     private String clientSecretValue;
-    @Value("${naver.api.search.word.X-Naver-Client-Secret.header}")
+    @Value("${naver.api.X-Naver-Client-Secret.header}")
     private String clientSecretHeader;
-    @Bean("naverSearchRestClient")
-    public RestClient naverSearchRestClient() {
-        log.error("naverSearchRestClient @Bean !!!");
-        log.trace("requestUrlJson -> {}", requestUrlJson);
+    @Bean("naverSearchEncycRestClient")
+    public RestClient naverSearchEncycRestClient() {
+        log.error("naverSearchEncycRestClient @Bean !!!");
+        log.trace("naverEncycRequestUrlJson -> {}", naverEncycRequestUrlJson);
         log.trace("clientIdValue -> {}", clientIdValue);
         log.trace("clientIdHeader -> {}", clientIdHeader);
         log.trace("clientSecretValue -> {}", clientSecretValue);
         log.trace("clientSecretHeader -> {}", clientSecretHeader);
 //        RestTemplateBuilder
 
-        RestClient naverSearchRestClient =
+        RestClient naverSearchEncycRestClient =
                 RestClient.builder()
-//                .baseUrl(requestUrlJson)
+//                .baseUrl(naverEncycRequestUrlJson)
                         .defaultHeader(clientIdHeader, clientIdValue)
                         .defaultHeader(clientSecretHeader, clientSecretValue)
                         .build();
 
-        log.trace("naverSearchRestClient -> {}", naverSearchRestClient);
+        log.trace("naverSearchEncycRestClient -> {}", naverSearchEncycRestClient);
 
-        return naverSearchRestClient;
+        return naverSearchEncycRestClient;
 //        return RestClient.create();
+    }
+
+
+    @Value("${naver.api.search.errata.request_url.json}")
+    private String naverErrataRequestUrlJson;
+
+    @Bean("naverSearchErrataRestClient")
+    public RestClient naverSearchErrataRestClient() {
+        log.error("naverSearchErrataRestClient @Bean !!!");
+        log.trace("naverErrataRequestUrlJson -> {}", naverErrataRequestUrlJson);
+        log.trace("clientIdValue -> {}", clientIdValue);
+        log.trace("clientIdHeader -> {}", clientIdHeader);
+        log.trace("clientSecretValue -> {}", clientSecretValue);
+        log.trace("clientSecretHeader -> {}", clientSecretHeader);
+//        RestTemplateBuilder
+
+        RestClient naverSearchErrataRestClient =
+                RestClient.builder()
+//                .baseUrl(naverEncycRequestUrlJson)
+                        .defaultHeader(clientIdHeader, clientIdValue)
+                        .defaultHeader(clientSecretHeader, clientSecretValue)
+                        .build();
+
+        log.trace("naverSearchErrataRestClient -> {}", naverSearchErrataRestClient);
+
+        return naverSearchErrataRestClient;
     }
 
 

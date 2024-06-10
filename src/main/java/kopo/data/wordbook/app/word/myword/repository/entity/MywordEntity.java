@@ -36,6 +36,9 @@ import java.util.List;
 @IdClass(MywordEntityId.class)
 public class MywordEntity {
 
+    public static final String RECENTLY_SEARCH_MYWORD =
+            "RECENTLY_SEARCH";
+
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     private StudentEntity student;
