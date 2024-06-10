@@ -3,6 +3,8 @@ package kopo.data.wordbook.app.word.myword.repository.entity;
 
 import jakarta.persistence.*;
 import kopo.data.wordbook.app.student.repository.entity.StudentEntity;
+import kopo.data.wordbook.app.word.repository.WordRepository;
+import kopo.data.wordbook.app.word.repository.document.WordDocument;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.DynamicInsert;
@@ -57,4 +59,24 @@ public class MywordEntity {
     private LocalDate regDate;
     @CreatedDate
     private LocalDate chgDate;
+
+    public List<String> addWordNameToWordNameList(String wordName, WordRepository wordRepository) {
+        log.trace("wordName -> {}", wordName);
+        if (this.wordNameList == null) {
+            log.warn("this.wordNameList == null!!");
+            this.wordNameList = new ArrayList<>();
+        }
+
+        WordDocument wordDocument = wordRepository.findByWordName(wordName).orElseThrow(
+                () -> new RuntimeException("mywordEntity 에 wordName 추가도중, mongoDB 에서 findByWordName 실패.."));
+
+        log.trace("wordDocument findByWordName -> {}", wordDocument);
+
+        if (wordNameList.contains(wordName)) {
+            log.warn("wordName 이 이미 wordNameList 에 포함됨..");
+        }
+        wordNameList.add(wordName);
+
+        return this.wordNameList;
+    }
 }

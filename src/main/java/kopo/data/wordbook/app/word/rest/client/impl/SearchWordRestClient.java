@@ -132,11 +132,16 @@ public class SearchWordRestClient implements ISearchWordRestClient {
                 // log.method("String", Throwable) 하면.. String 출력하고, stacktrace 출력함
                 log.warn("mongoDB insert 도중 DuplicateKeyException 발생!!", e);
 
-                WordDocument byWordName = Optional.ofNullable(
-                        wordRepository.findByWordName(savingWord.getWordName())
-                ).orElseThrow(()
-                        ->
-                        new RuntimeException("mongoDB insert 도중 중복되는 wordName 으로 인해 findByWordName 했지만, 찾지 못함"));
+//                WordDocument byWordName = Optional.ofNullable(
+//                        wordRepository.findByWordName(savingWord.getWordName())
+//                ).orElseThrow(()
+//                        ->
+//                        new RuntimeException("mongoDB insert 도중 중복되는 wordName 으로 인해 findByWordName 했지만, 찾지 못함"));
+                WordDocument byWordName = wordRepository.findByWordName(
+                                savingWord.getWordName()
+                        ).orElseThrow(()
+                                ->
+                                new RuntimeException("mongoDB insert 도중 중복되는 wordName 으로 인해 findByWordName 했지만, 찾지 못함"));
 //                ).orElseThrow(()
 //                        ->
 //                        new DuplicateKeyException("mongoDB insert 도중 중복되는 wordName 으로 인해 findByWordName 했지만, 찾지 못함"));
