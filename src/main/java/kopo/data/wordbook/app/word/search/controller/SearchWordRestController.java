@@ -7,10 +7,7 @@ import kopo.data.wordbook.app.word.search.service.ISearchWordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -23,6 +20,7 @@ public class SearchWordRestController {
     public final static class HandleUrl
     {
         public final static String getSearchWordName = "/{word}";
+        public final static String getWordErrataCheck = "/wordErrataCheck";
     }
 
     @GetMapping(HandleUrl.getSearchWordName)
@@ -40,5 +38,18 @@ public class SearchWordRestController {
 
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping(HandleUrl.getWordErrataCheck)
+    public ResponseEntity<String> getWordErrataCheck(
+            HttpSession session,
+            @RequestParam(value = "wordName", required = false) String wordName
+    ) {
+        log.trace("wordName by @RequestParam -> {}", wordName);
+
+        return ResponseEntity.ok(
+                searchWordService.wordErrataCheck(wordName)
+        );
+
     }
 }

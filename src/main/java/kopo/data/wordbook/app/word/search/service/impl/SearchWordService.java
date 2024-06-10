@@ -23,4 +23,12 @@ public class SearchWordService implements ISearchWordService {
 
         return null;
     }
+
+    @Override
+    public String wordErrataCheck(String wordName) {
+
+        String errataWord = searchWordRestClient.searchNaverErrataWord(wordName);
+        log.trace("errataWord -> {}", errataWord);
+        return errataWord;
+    }
 }
