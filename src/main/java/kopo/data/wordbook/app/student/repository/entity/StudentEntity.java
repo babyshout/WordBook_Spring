@@ -3,6 +3,7 @@ package kopo.data.wordbook.app.student.repository.entity;
 import jakarta.persistence.*;
 import kopo.data.wordbook.app.notepad.repository.entity.NotepadEntity;
 import kopo.data.wordbook.app.student.dto.StudentDTO;
+import kopo.data.wordbook.app.student.social.repository.entity.SocialLoginEntity;
 import kopo.data.wordbook.app.word.myword.repository.entity.MywordEntity;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -76,6 +77,14 @@ public class StudentEntity {
             mappedBy = "regStudent"
     )
     List<NotepadEntity> notepadEntityList = new ArrayList<>();
+
+    @OneToMany(
+            orphanRemoval = true,
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            mappedBy = "student"
+    )
+    List<SocialLoginEntity> socialLoginEntityList = new ArrayList<>();
 
     public static StudentEntity of(StudentDTO pDTO) {
         return StudentEntity.builder()
