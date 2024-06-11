@@ -19,11 +19,11 @@ public class SearchWordRestController {
 
     public final static class HandleUrl
     {
-        public final static String getSearchWordName = "/{word}";
+        public final static String getSearchWord = "/{word}";
         public final static String getWordErrataCheck = "/wordErrataCheck";
     }
 
-    @GetMapping(HandleUrl.getSearchWordName)
+    @GetMapping(HandleUrl.getSearchWord)
     public ResponseEntity<SearchWordResponse> getSearchWord(
             HttpSession session,
             @PathVariable String word

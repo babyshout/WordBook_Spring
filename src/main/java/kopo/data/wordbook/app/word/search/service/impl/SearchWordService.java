@@ -1,6 +1,7 @@
 package kopo.data.wordbook.app.word.search.service.impl;
 
 import kopo.data.wordbook.app.student.repository.StudentRepository;
+import kopo.data.wordbook.app.word.repository.document.WordDocument;
 import kopo.data.wordbook.app.word.rest.client.ISearchWordRestClient;
 import kopo.data.wordbook.app.word.search.controller.response.SearchWordResponse;
 import kopo.data.wordbook.app.word.search.service.ISearchWordService;
@@ -19,6 +20,7 @@ public class SearchWordService implements ISearchWordService {
     @Override
     public SearchWordResponse searchWord(String wordName, String studentId) {
 
+        WordDocument wordDocument = searchWordRestClient.searchStdictWord(wordName);
 
 
         return null;
