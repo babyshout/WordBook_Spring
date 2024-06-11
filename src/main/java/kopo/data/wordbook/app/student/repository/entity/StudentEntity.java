@@ -34,7 +34,7 @@ import java.util.List;
 public class StudentEntity {
 
     @Id
-    @Column(name = "STUDENT_ID", length = 20, nullable = false)
+    @Column(name = "STUDENT_ID", length = 100, nullable = false)
     String studentId;
 
     @Setter
@@ -50,12 +50,12 @@ public class StudentEntity {
     String name;
 
 
-    @Column(name = "REG_ID", length = 20, nullable = false)
+    @Column(name = "REG_ID", length = 100, nullable = false)
     String regId;
     @Column(name = "REG_DATE")
     @CreatedDate
     LocalDate regDate;
-    @Column(name = "CHANGER_ID", length = 20, nullable = false)
+    @Column(name = "CHANGER_ID", length = 100, nullable = false)
     String changerId;
     @Column(name = "CHANGER_DATE")
     @LastModifiedDate

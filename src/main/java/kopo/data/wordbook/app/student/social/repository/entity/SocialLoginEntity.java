@@ -41,6 +41,7 @@ public class SocialLoginEntity {
     @ManyToOne(
             fetch = FetchType.LAZY
     )
+    @ToString.Exclude
     private StudentEntity student;
 
     @Column(nullable = false)
