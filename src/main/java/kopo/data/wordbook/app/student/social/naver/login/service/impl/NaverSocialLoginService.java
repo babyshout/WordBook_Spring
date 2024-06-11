@@ -62,21 +62,21 @@ public class NaverSocialLoginService implements INaverSocialLoginService {
         String nameOfNidme = nidmeResponse.response().name();
         String emailOfNidme = nidmeResponse.response().email();
 
-        SocialLoginEntityId socialLoginEntityId =
+        SocialLoginEntityId socialLoginId =
                 SocialLoginEntityId.builder()
                         .id_bySocialLoginProvider(idOfNidme)
                         .provider(SocialLoginProvider.NAVER)
                         .build();
 
         Optional<SocialLoginEntity> socialLoginEntityById =
-                socialLoginRepository.findById(socialLoginEntityId);
+                socialLoginRepository.findById(socialLoginId);
 
         if (socialLoginEntityById.isPresent()) {
             return this.loginByExistsSocialLoginEntity(socialLoginEntityById.get());
         }
 
         LogInController.LoginSessionInformation sessionInfo =
-                this.registerByNidMeResponse(idOfNidme, emailOfNidme, nameOfNidme);
+                this.registerByNidMeResponse(socialLoginId, idOfNidme, emailOfNidme, nameOfNidme);
 
         return sessionInfo;
     }
@@ -84,12 +84,15 @@ public class NaverSocialLoginService implements INaverSocialLoginService {
 
     /**
      * 받아온 session Info 로 회원가입 및 회원가입한 entity 로 LoginSessionInformation 받아옴
+     *
+     * @param socialLoginEntityId
      * @param idOfNidme
      * @param emailOfNidme
      * @param nameOfNidme
      * @return
      */
     private LogInController.LoginSessionInformation registerByNidMeResponse(
+            SocialLoginEntityId socialLoginEntityId,
             String idOfNidme,
             String emailOfNidme,
             String nameOfNidme
@@ -108,14 +111,24 @@ public class NaverSocialLoginService implements INaverSocialLoginService {
         log.trace("savedStudent -> {}", savedStudent);
 
 
-        SocialLoginEntity socialLoginEntity = SocialLoginEntity.builder()
-                .id_bySocialLoginProvider(idOfNidme)
-                .email(EncryptUtil.encAES128CBC(emailOfNidme))
-                .provider(SocialLoginProvider.NAVER)
-                .name(nameOfNidme)
-                .student(savedStudent).build();
+//        SocialLoginEntity savingSocialEntity = SocialLoginEntity.builder()
+//                .id_bySocialLoginProvider(idOfNidme)
+//                .email(EncryptUtil.encAES128CBC(emailOfNidme))
+//                .provider(SocialLoginProvider.NAVER)
+//                .name(nameOfNidme)
+//                .student(savedStudent).build();
+        log.trace("socialLoginEntityId -> {}", socialLoginEntityId);
+        SocialLoginEntity savingSocialEntity =
+                SocialLoginEntity.builder()
+                        .primaryKey(socialLoginEntityId)
 
-        SocialLoginEntity savedSocialLogin = socialLoginRepository.save(socialLoginEntity);
+                        .student(savedStudent)
+                        .email(EncryptUtil.encAES128CBC(emailOfNidme))
+                        .name(nameOfNidme)
+                        .build();
+        log.trace("savingSocialEntity -> {}", savingSocialEntity);
+
+        SocialLoginEntity savedSocialLogin = socialLoginRepository.save(savingSocialEntity);
 
         log.trace("savedSocialLogin -> {}", savedSocialLogin);
 
@@ -128,6 +141,7 @@ public class NaverSocialLoginService implements INaverSocialLoginService {
 
     /**
      * 이미 있는 회원정보로 LoginSessionInformation 받아옴..
+     *
      * @param socialLoginEntity
      * @return
      */

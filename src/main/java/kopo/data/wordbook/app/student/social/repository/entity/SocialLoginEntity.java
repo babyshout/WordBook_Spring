@@ -19,19 +19,21 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @DynamicInsert
 @DynamicUpdate
 @Entity
-@Table(name = "STUDENT")
+@Table
 // @CreatedDate, @LastModifiedDate 작동을 위해 추가
 // @link https://wildeveloperetrain.tistory.com/76
 @EntityListeners(AuditingEntityListener.class)
-@IdClass(SocialLoginEntityId.class)
+//@IdClass(SocialLoginEntityId.class)
 public class SocialLoginEntity {
 
-    @Id
-    private String id_bySocialLoginProvider;
-
-    @Id
-    @Enumerated(EnumType.STRING)
-    private SocialLoginProvider provider;
+    @EmbeddedId
+    private SocialLoginEntityId primaryKey;
+//    @Id
+//    private String id_bySocialLoginProvider;
+//
+//    @Id
+//    @Enumerated(EnumType.STRING)
+//    private SocialLoginProvider provider;
 
     @JoinColumn(
             nullable = false
