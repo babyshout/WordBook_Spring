@@ -22,6 +22,8 @@ public class SearchWordService implements ISearchWordService {
 
         WordDocument wordDocument = searchWordRestClient.searchStdictWord(wordName);
 
+        log.trace("wordDocument -> {}", wordDocument);
+
 
         return null;
     }

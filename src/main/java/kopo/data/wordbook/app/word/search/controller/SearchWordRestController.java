@@ -1,7 +1,9 @@
 package kopo.data.wordbook.app.word.search.controller;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import kopo.data.wordbook.app.student.controller.rest.LogInController;
+import kopo.data.wordbook.app.word.search.controller.request.SearchWordRequst;
 import kopo.data.wordbook.app.word.search.controller.response.SearchWordResponse;
 import kopo.data.wordbook.app.word.search.service.ISearchWordService;
 import lombok.RequiredArgsConstructor;
@@ -19,22 +21,23 @@ public class SearchWordRestController {
 
     public final static class HandleUrl
     {
-        public final static String getSearchWord = "/{word}";
+        public final static String postGetSearchWord = "/getSearchWord";
         public final static String getWordErrataCheck = "/wordErrataCheck";
     }
 
-    @GetMapping(HandleUrl.getSearchWord)
+    @PostMapping(HandleUrl.postGetSearchWord)
     public ResponseEntity<SearchWordResponse> getSearchWord(
             HttpSession session,
-            @PathVariable String word
+            @RequestBody @Valid SearchWordRequst body
+//            @PathVariable String word
     ) {
-        log.trace("word by path variable -> {}", word);
+        log.trace("body -> {}", body);
         LogInController.LoginSessionInformation info =
                 LogInController.getLoginInformationFromSession(session);
         log.trace("loginSessionInfo -> {}", info);
 
         SearchWordResponse response =
-                searchWordService.searchWord(word, info.studentId());
+                searchWordService.searchWord(body.wordName(), info.studentId());
 
 
         return ResponseEntity.ok(response);

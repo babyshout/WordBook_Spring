@@ -45,6 +45,7 @@ public class NotepadEntity {
             updatable = false
 //            insertable = false
     )
+    @ToString.Exclude
     private StudentEntity regStudent;
 
     @CreatedDate
@@ -57,6 +58,7 @@ public class NotepadEntity {
             nullable = false,
             updatable = true
     )
+    @ToString.Exclude
     private StudentEntity chgStudent;
 
     @LastModifiedDate
