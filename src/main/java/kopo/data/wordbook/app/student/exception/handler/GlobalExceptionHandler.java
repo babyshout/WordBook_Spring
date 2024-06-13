@@ -1,5 +1,6 @@
 package kopo.data.wordbook.app.student.exception.handler;
 
+import kopo.data.wordbook.app.calendar.exception.ScheduleException;
 import kopo.data.wordbook.app.student.constants.StudentErrorResult;
 import kopo.data.wordbook.app.student.exception.StudentException;
 import kopo.data.wordbook.common.mail.MailException;
@@ -91,6 +92,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         log.warn("Exception occur: ", e);
         return this.makeErrorResponseEntity(
                 StudentErrorResult.DUPLICATED_MEMBERSHIP_REGISTER
+        );
+    }
+
+    @ExceptionHandler({ScheduleException.class})
+    public ResponseEntity<ErrorResponse> handleScheduleException(
+            final ScheduleException e
+    ) {
+        log.warn("ScheduleException occur", e);
+        return this.makeErrorResponseEntity(
+                e.status,
+                e.getMessage()
         );
     }
 
