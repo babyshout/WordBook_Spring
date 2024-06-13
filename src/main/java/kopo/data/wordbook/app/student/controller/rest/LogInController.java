@@ -170,7 +170,7 @@ public class LogInController {
     }
 
     public static LoginSessionInformation getLoginInformationFromSession(HttpSession session) {
-        log.trace("loginInfoName : {}", LoginSessionInformation.class.getName());
+//        log.trace("loginInfoName : {}", LoginSessionInformation.class.getName());
         return (LoginSessionInformation)
                 session.getAttribute(LoginSessionInformation.class.getName());
     }
