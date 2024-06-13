@@ -131,6 +131,7 @@ public class NaverSocialLoginService implements INaverSocialLoginService {
         SocialLoginEntity savedSocialLogin = socialLoginRepository.save(savingSocialEntity);
 
         log.trace("savedSocialLogin -> {}", savedSocialLogin);
+//        LogInController.setLoginSessionInfoToSession();
 
         LogInController.LoginSessionInformation sessionInfo =
                 LogInController.LoginSessionInformation.of(savedStudent);

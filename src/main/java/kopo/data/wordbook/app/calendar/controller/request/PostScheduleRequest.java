@@ -18,7 +18,7 @@ public record PostScheduleRequest(
         LocalDate end,
         @AssertTrue
         Boolean allDay,
-        @NotNull
+//        @NotNull
         Long id
 
 ) {
