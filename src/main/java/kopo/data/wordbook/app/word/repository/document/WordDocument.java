@@ -34,6 +34,7 @@ public class WordDocument {
     @Data
     @Builder
     public static class WordDetail {
+
         /**
          * 보조 번호
          */
@@ -58,7 +59,6 @@ public class WordDocument {
          * 품사
          */
         private String pos;
-
 
         public static List<WordDetail> of(StdictKoreanSearchApiResponse apiResponse) {
 
@@ -92,8 +92,8 @@ public class WordDocument {
             return wordDetailListFromApiResponse;
         }
 
-    }
 
+    }
     public static WordDocument of(StdictKoreanSearchApiResponse apiResponse) {
         String wordName = apiResponse.getChannel().getItem().get(0).getWord();
 
@@ -108,5 +108,16 @@ public class WordDocument {
         return result;
     }
 
+
+    public static List<WordDocument> listOf(StdictKoreanSearchApiResponse apiResponse) {
+        List<WordDocument> wordDocumentList = new ArrayList<>();
+
+        List<StdictKoreanSearchApiResponse.Channel.Item> itemList =
+                apiResponse.getChannel().getItem();
+
+
+
+        return null;
+    }
 
 }

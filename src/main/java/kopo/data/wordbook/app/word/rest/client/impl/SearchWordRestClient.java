@@ -7,6 +7,7 @@ import jakarta.annotation.Resource;
 import kopo.data.wordbook.app.word.repository.WordRepository;
 import kopo.data.wordbook.app.word.repository.document.WordDocument;
 import kopo.data.wordbook.app.word.rest.client.ISearchWordRestClient;
+import kopo.data.wordbook.app.word.search.controller.response.SimpleWordResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -41,7 +44,7 @@ public class SearchWordRestClient implements ISearchWordRestClient {
     @Override
     public void searchNaverEncycWord(String queryWord) {
 
-        log.error("searchWord -> naverSearchEncycRestClient -> {}", naverSearchEncycRestClient);
+        log.error("searchNaverEncycWord -> naverSearchEncycRestClient -> {}", naverSearchEncycRestClient);
 
 
         String encodedQueryWord = URLEncoder.encode(queryWord, StandardCharsets.UTF_8);
@@ -84,7 +87,7 @@ public class SearchWordRestClient implements ISearchWordRestClient {
     @Override
     public String searchNaverErrataWord(String queryWord) {
 
-        log.error("searchWord -> naverSearchErrataRestClient -> {}",
+        log.error("searchNaverErrataWord -> naverSearchErrataRestClient -> {}",
                 naverSearchErrataRestClient);
 
 
@@ -96,8 +99,7 @@ public class SearchWordRestClient implements ISearchWordRestClient {
 
         String uriToQuery =
                 naverSearchErrataRequestUrlJson +
-                        "?query=" + encodedQueryWord
-                ;
+                        "?query=" + encodedQueryWord;
         log.trace("uriToQuery -> {}", uriToQuery);
 
 //        ResponseEntity<String> entity =
@@ -161,9 +163,9 @@ public class SearchWordRestClient implements ISearchWordRestClient {
 
         String uriToQuery =
                 stdictRequestUrl +
-                        "?" + stdictKey +
+                        "?key=" + stdictKey +
                         "&q=" + encodedQueryWord +
-                        "&" + stdictReqTypeJson;
+                        "&req_type=" + stdictReqTypeJson;
         log.trace("uriToQuery -> {}", uriToQuery);
 
 //        UriComponents = UriComponentsBuilder.fromHttpUrl(stdictRequestUrl)
@@ -231,5 +233,66 @@ public class SearchWordRestClient implements ISearchWordRestClient {
 
         // 위에서 Exception 생기면.. 애초에 여기까지 오지도 못함
         return saved;
+    }
+
+    @Override
+    public List<SimpleWordResponse> searchStdictWordList(String queryWord) {
+
+
+        String encodedQueryWord = URLEncoder.encode(queryWord, StandardCharsets.UTF_8);
+
+
+        log.trace("queryWord -> {}", queryWord);
+        log.trace("encodedQueryWord -> {}", encodedQueryWord);
+
+        log.trace("stdictKoreanSearchRestClient.get().toString() -> {}",
+                stdictKoreanSearchRestClient.get().toString());
+
+        URI uriToQuery =
+                UriComponentsBuilder.fromHttpUrl(stdictRequestUrl)
+                        .queryParam("key", stdictKey)
+                        .queryParam("q", encodedQueryWord)
+                        .queryParam("req_type", stdictReqTypeJson)
+                        .queryParam("advanced", "y")
+                        .queryParam("method", "include")
+                        .queryParam("num", 100)
+                        .build().toUri();
+        log.trace("uriToQuery -> {}", uriToQuery);
+
+        ResponseEntity<String> entity =
+                stdictKoreanSearchRestClient.get()
+                        .uri(uriToQuery)
+                        .retrieve().toEntity(String.class);
+
+        log.trace("entity.getBody().toString() -> {}",
+                entity.getBody().toString());
+
+
+
+        String responseBodyToString = entity.getBody().toString();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<SimpleWordResponse> responseList = null;
+        try {
+            StdictKoreanSearchApiResponse apiResponse =
+                    objectMapper.readValue(responseBodyToString, StdictKoreanSearchApiResponse.class);
+
+            log.trace("apiResponse -> {}", apiResponse);
+
+            List<StdictKoreanSearchApiResponse.Channel.Item> itemList = apiResponse.getChannel().getItem();
+
+            responseList = SimpleWordResponse.listOf(itemList);
+
+            log.trace("responseList -> {}", responseList);
+        } catch (JsonProcessingException e) {
+            log.warn("Json parsing 중 예외 발생!!!", e);
+            throw new RuntimeException(e);
+        }
+
+
+        // 위에서 Exception 생기면.. 애초에 여기까지 오지도 못함
+        return responseList;
+//        return saved;
+
     }
 }

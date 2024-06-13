@@ -26,7 +26,13 @@ class SearchWordRestClientTest {
     void searchStdictWord() {
 
 
-        searchWordRestClient.searchStdictWord("주식");
+        searchWordRestClient.searchStdictWord("안녕-하다");
 
+    }
+
+    @Test
+    void searchStdictWordList() {
+//        searchWordRestClient.searchStdictWordList("안녕");
+        searchWordRestClient.searchStdictWordList("주식");
     }
 }
