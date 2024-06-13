@@ -25,6 +25,9 @@ public class ScheduleService implements IScheduleService {
 
     @Override
     public PostScheduleResponse createSchedule(PostScheduleRequest body, HttpSession session) {
+
+
+
         LogInController.LoginSessionInformation sessionInfo =
                 LogInController.getLoginInformationFromSession(session);
         final String studentId = sessionInfo.studentId();
