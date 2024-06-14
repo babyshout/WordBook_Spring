@@ -14,6 +14,7 @@ import kopo.data.wordbook.app.word.search.service.ISearchWordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,11 +75,11 @@ public class SearchWordService implements ISearchWordService {
         List<String> wordNameList = byStudentAndMywordName.get().getWordNameList();
 
         List<RecentlySearchWord> responseList = new ArrayList<>();
-        wordNameList.forEach(s -> {
-            responseList.add(RecentlySearchWord.builder()
-                    .wordName(s)
-                    .build());
-        });
+        wordNameList.forEach(
+                s -> responseList.add(RecentlySearchWord.builder()
+                        .wordName(s)
+                        .build())
+        );
 
 
         log.trace("responseList -> {}", responseList);
@@ -88,7 +89,7 @@ public class SearchWordService implements ISearchWordService {
     /**
      * 단순히, wordDocument 에서 find first 해서 가져옴..
      *
-     * @return
+     * @return findFirstBy 로 나온 WordDocument
      */
     @Override
     public WordDocument getTodaySearchWord() {
@@ -96,6 +97,43 @@ public class SearchWordService implements ISearchWordService {
                 .orElseThrow(() -> new RuntimeException("WordDocument 가 없음!!!"));
 
         log.trace("wordDocument By getTodaySearchWord() -> {}", wordDocument);
+        return wordDocument;
+    }
+
+    /**
+     * 단어검색하면 호출할 메서드.. 검색과 동시에 사용자 최근 검색단어에 추가함!!
+     *
+     * @param wordName 검색할 단어 이름
+     * @param studentId 최근검색목록에 추가할 student's ID
+     * @return 검색까지 다 끝나면 해당 wordName 으로 검색한 WordDocument 를 리턴함
+     */
+    @Transactional
+    @Override
+    public WordDocument getSearchWordDetail(String wordName, String studentId) {
+        WordDocument wordDocument = searchWordRestClient.searchStdictWord(wordName);
+
+        log.trace("wordDocument -> {}", wordDocument);
+
+        // 최근검색단어에 넣어주는 과정 시작
+        StudentEntity student = studentRepository.findById(studentId).orElseThrow(() ->
+                new RuntimeException("단어검색 시도했으나 동일한 사용자가 없음!!"));
+
+        MywordEntity mywordEntity = mywordRepository.findByStudentAndMywordName(student, MywordEntity.RECENTLY_SEARCH_MYWORD)
+                // 최근 검색 단어장을 불러오고, 없다면 새로 생성!!!
+                .orElseGet(() -> {
+                    MywordEntity buildInOrElseGet = MywordEntity.builder().mywordName(MywordEntity.RECENTLY_SEARCH_MYWORD)
+                            .student(student)
+                            .build();
+                    log.trace("buildInOrElseGet -> {}", buildInOrElseGet);
+                    return mywordRepository.save(buildInOrElseGet);
+                });
+
+        log.trace("mywordEntity -> {}", mywordEntity);
+
+        List<String> wordNameList = mywordEntity.addWordNameToWordNameList(wordName, wordRepository);
+        log.trace("wordNameList in mywordEntity -> {}", wordNameList);
+        // 최근검색단어에 넣어주는 과정 끝
+
         return wordDocument;
     }
 }

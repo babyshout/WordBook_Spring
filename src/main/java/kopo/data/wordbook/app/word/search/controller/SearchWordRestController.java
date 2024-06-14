@@ -6,7 +6,6 @@ import kopo.data.wordbook.app.student.controller.rest.LogInController;
 import kopo.data.wordbook.app.word.repository.document.WordDocument;
 import kopo.data.wordbook.app.word.search.controller.request.SearchWordRequst;
 import kopo.data.wordbook.app.word.search.controller.response.RecentlySearchWord;
-import kopo.data.wordbook.app.word.search.controller.response.SearchWordResponse;
 import kopo.data.wordbook.app.word.search.controller.response.SimpleWordResponse;
 import kopo.data.wordbook.app.word.search.service.ISearchWordService;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +28,21 @@ public class SearchWordRestController {
         public final static String getWordErrataCheck = "/wordErrataCheck";
         public final static String getSearchRecentlySearchWord = "/searchRecentlySearchWord";
         public final static String getTodaySearchWord = "/todaySearchWord";
+        public final static String getSearchWordDetail = "/searchSearch/{wordName}";
+    }
+
+    @GetMapping(HandleUrl.getSearchWordDetail)
+    public ResponseEntity<WordDocument> getSearchWordDetail(
+            HttpSession session,
+            @PathVariable String wordName
+    ) {
+        log.trace("wordName -> {}", wordName);
+        LogInController.LoginSessionInformation sessionInfo =
+                LogInController.getLoginInformationFromSession(session);
+
+        WordDocument wordDocument = searchWordService.getSearchWordDetail(wordName, sessionInfo.studentId());
+
+        return ResponseEntity.ok(wordDocument);
     }
 
     @PostMapping(HandleUrl.postGetSearchSimpleWordList)
@@ -69,7 +83,7 @@ public class SearchWordRestController {
 
     @GetMapping(HandleUrl.getWordErrataCheck)
     public ResponseEntity<String> getWordErrataCheck(
-            HttpSession session,
+//            HttpSession session,
             @RequestParam(value = "wordName", required = false) String wordName
     ) {
         log.trace("wordName by @RequestParam -> {}", wordName);

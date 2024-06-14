@@ -16,6 +16,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 
 @Slf4j
@@ -63,6 +64,13 @@ public class MywordEntity {
     @CreatedDate
     private LocalDate chgDate;
 
+    /**
+     * save 필요할것으로 보임..
+     * NOTE 왠지는 모르나 save 안해도 저장됨..!
+     * @param wordName 추가할 단어명
+     * @param wordRepository 단어검색시 사용할 WordDocument 를 컨트롤하는 repository
+     * @return wordName 이 추가된 {@link #wordNameList} 리턴함!!
+     */
     public List<String> addWordNameToWordNameList(String wordName, WordRepository wordRepository) {
         log.trace("wordName -> {}", wordName);
         if (this.wordNameList == null) {
@@ -81,5 +89,11 @@ public class MywordEntity {
         wordNameList.add(wordName);
 
         return this.wordNameList;
+    }
+
+    public Set<String> wordNameListToSet() {
+        Set<String> wordNameSet = Set.copyOf(wordNameList);
+        log.trace("wordNameSet -> {}", wordNameSet);
+        return wordNameSet;
     }
 }
