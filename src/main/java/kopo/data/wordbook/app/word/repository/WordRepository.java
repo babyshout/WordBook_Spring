@@ -13,4 +13,7 @@ public interface WordRepository extends MongoRepository<WordDocument, ObjectId> 
     List<WordDocument> findAllByWordName(String wordName);
 
     Optional<WordDocument> findByWordName(String wordName);
+
+    Optional<WordDocument> findFirstBy();
+
 }

@@ -3,6 +3,7 @@ package kopo.data.wordbook.app.word.search.controller;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import kopo.data.wordbook.app.student.controller.rest.LogInController;
+import kopo.data.wordbook.app.word.repository.document.WordDocument;
 import kopo.data.wordbook.app.word.search.controller.request.SearchWordRequst;
 import kopo.data.wordbook.app.word.search.controller.response.RecentlySearchWord;
 import kopo.data.wordbook.app.word.search.controller.response.SearchWordResponse;
@@ -27,6 +28,7 @@ public class SearchWordRestController {
         public final static String postGetSearchSimpleWordList = "/getSearchSimpleWordList";
         public final static String getWordErrataCheck = "/wordErrataCheck";
         public final static String getSearchRecentlySearchWord = "/searchRecentlySearchWord";
+        public final static String getTodaySearchWord = "/todaySearchWord";
     }
 
     @PostMapping(HandleUrl.postGetSearchSimpleWordList)
@@ -76,5 +78,12 @@ public class SearchWordRestController {
                 searchWordService.wordErrataCheck(wordName)
         );
 
+    }
+
+    @GetMapping(HandleUrl.getTodaySearchWord)
+    public ResponseEntity<WordDocument> getTodaySearchWord() {
+        WordDocument wordDocument = searchWordService.getTodaySearchWord();
+
+        return ResponseEntity.ok(wordDocument);
     }
 }
