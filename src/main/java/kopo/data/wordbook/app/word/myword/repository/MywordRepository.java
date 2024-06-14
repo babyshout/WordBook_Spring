@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MywordRepository extends JpaRepository<MywordEntity, MywordEntityId> {
-    Optional<List<MywordEntity>> findAllByStudentIs(StudentEntity student);
+    List<MywordEntity> findAllByStudentIs(StudentEntity student);
 
     Optional<MywordEntity> findByStudentAndMywordName(StudentEntity student, String mywordName);
 
