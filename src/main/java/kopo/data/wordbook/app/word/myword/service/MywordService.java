@@ -1,11 +1,15 @@
 package kopo.data.wordbook.app.word.myword.service;
 
 import kopo.data.wordbook.app.word.myword.controller.request.PostWordNameToMywordRequest;
+import kopo.data.wordbook.app.word.myword.controller.response.MywordDetailResponse;
 import kopo.data.wordbook.app.word.myword.controller.response.MywordResponse;
 import kopo.data.wordbook.app.word.myword.controller.response.SimpleMywordResponse;
 import kopo.data.wordbook.app.word.myword.repository.entity.MywordEntity;
+import kopo.data.wordbook.app.word.repository.document.WordDocument;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public interface MywordService {
 
@@ -40,4 +44,28 @@ public interface MywordService {
      * @return 추가된 {@link MywordEntity}
      */
     MywordEntity addWordNameToMywordOfStudentId(String wordName, String mywordName, String studentId);
+
+    /**
+     * studentId 로 전체 단어장을 검색해서 {@link List<MywordResponse>} 로 바꿔서 리턴함
+     * @param studentId 검색할 사용자 아이디
+     * @return {@link List<MywordResponse>}
+     */
+    List<MywordResponse> getMywordResponseList(String studentId);
+
+    /**
+     * studentId 와 mywordName 으로 특정 MywordEntity 의 wordNameList 에서 wordDocument 를 가져옴!
+     * @param mywordName 단어장 이름
+     * @param studentId 검색할 사용자 아이디
+     * @return {@link kopo.data.wordbook.app.word.repository.document.WordDocument} 가 들어있는
+     * {@link List} 를 갖고있는 MywordDetailResopnse 를 리턴함!!!
+     */
+    MywordDetailResponse getMywordDetailResponseList(String mywordName, String studentId);
+
+    /**
+     * FIXME 리펙터링 가능할것으로 보임..
+     *
+     * @param wordNameList 검색할 단어이름이 들어있는 {@link List}
+     * @return {@link WordDocument} 가 들어있는 {@link List}
+     */
+    List<WordDocument> getWordDocumentList(List<String> wordNameList);
 }

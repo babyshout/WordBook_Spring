@@ -11,7 +11,6 @@ public record MywordResponse(
         List<String> wordNameList
 ) {
     public static MywordResponse of(MywordEntity entity) {
-
         return MywordResponse.builder()
                 .mywordName(entity.getMywordName())
                 .wordNameList(List.copyOf(entity.getWordNameList()))

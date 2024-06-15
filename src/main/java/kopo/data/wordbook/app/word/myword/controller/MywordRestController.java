@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import kopo.data.wordbook.app.student.controller.rest.LogInController;
 import kopo.data.wordbook.app.word.myword.controller.request.PostAddNewMywordRequest;
 import kopo.data.wordbook.app.word.myword.controller.request.PostWordNameToMywordRequest;
+import kopo.data.wordbook.app.word.myword.controller.response.MywordDetailResponse;
 import kopo.data.wordbook.app.word.myword.controller.response.MywordResponse;
 import kopo.data.wordbook.app.word.myword.controller.response.SimpleMywordResponse;
 import kopo.data.wordbook.app.word.myword.service.MywordService;
@@ -30,6 +31,8 @@ public class MywordRestController {
         public static final String getSimpleMywordList = "/list/simple";
         public static final String postAddNewMyword = "/addNewMyword";
         public static final String postWordNameToMyword = "/wordNameToMyword";
+        public static final String getMywordList = "/list";
+        public static final String getMywordDetail = "/detail";
     }
 
     /**
@@ -53,7 +56,7 @@ public class MywordRestController {
     }
 
     @PostMapping(MappedUrl.postAddNewMyword)
-    public ResponseEntity postAddNewMyword(
+    public ResponseEntity<List<SimpleMywordResponse>> postAddNewMyword(
             HttpSession session,
             @RequestBody @Valid PostAddNewMywordRequest body
     ) {
@@ -81,5 +84,44 @@ public class MywordRestController {
                 mywordService.postWordNameToMyword(body, sessionInfo.studentId());
 
         return ResponseEntity.ok(mywordResponse);
+    }
+
+    /**
+     *
+     * @param session
+     * @return
+     */
+    @GetMapping(MappedUrl.getMywordList)
+    public ResponseEntity<List<MywordResponse>> getMywordList(
+            HttpSession session
+    ) {
+        LogInController.LoginSessionInformation sessionInfo =
+                LogInController.getLoginInformationFromSession(session);
+
+        List<MywordResponse> responseList =
+                mywordService.getMywordResponseList(sessionInfo.studentId());
+
+        return ResponseEntity.ok(responseList);
+    }
+
+    /**
+     * TODO 테스트 필요
+     *
+     * @param session
+     * @param mywordName
+     * @return
+     */
+    @GetMapping(MappedUrl.getMywordDetail)
+    public ResponseEntity<MywordDetailResponse> getMywordDetail(
+            HttpSession session,
+            @RequestParam String mywordName
+    ) {
+        LogInController.LoginSessionInformation sessionInfo =
+                LogInController.getLoginInformationFromSession(session);
+
+        MywordDetailResponse response =
+                mywordService.getMywordDetailResponseList(mywordName, sessionInfo.studentId());
+
+        return ResponseEntity.ok(response);
     }
 }

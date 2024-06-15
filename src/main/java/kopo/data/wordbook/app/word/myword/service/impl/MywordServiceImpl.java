@@ -3,6 +3,7 @@ package kopo.data.wordbook.app.word.myword.service.impl;
 import kopo.data.wordbook.app.student.repository.StudentRepository;
 import kopo.data.wordbook.app.student.repository.entity.StudentEntity;
 import kopo.data.wordbook.app.word.myword.controller.request.PostWordNameToMywordRequest;
+import kopo.data.wordbook.app.word.myword.controller.response.MywordDetailResponse;
 import kopo.data.wordbook.app.word.myword.controller.response.MywordResponse;
 import kopo.data.wordbook.app.word.myword.controller.response.SimpleMywordResponse;
 import kopo.data.wordbook.app.word.myword.repository.MywordRepository;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -153,6 +155,92 @@ public class MywordServiceImpl implements MywordService {
 
         log.trace("mywordEntity after add {} -> {}", wordName, mywordEntity);
         return mywordEntity;
+    }
+
+    /**
+     * studentId 로 전체 단어장을 검색해서 {@link List<MywordResponse>} 로 바꿔서 리턴함
+     *
+     * @param studentId 검색할 사용자 아이디
+     * @return {@link List<MywordResponse>}
+     */
+    @Transactional
+    @Override
+    public List<MywordResponse> getMywordResponseList(String studentId) {
+
+        // 학생 조회
+        StudentEntity student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("MywordEntity 조회중, studentId 와 일치하는 studentEntity 가 없음!!"));
+        log.trace("student -> {}", student);
+
+        // 해당 학생으로 전체 단어장 조회
+        List<MywordEntity> allByStudentIs = mywordRepository.findAllByStudentIs(student);
+        log.trace("allByStudnetIs -> {}", allByStudentIs);
+
+        // List<MywordResponse> 에 담아줌..
+        List<MywordResponse> responseList = new ArrayList<>();
+
+        allByStudentIs.forEach(entity -> {
+            responseList.add(MywordResponse.of(entity));
+        });
+
+        log.trace("responseList -> {}", responseList);
+
+        return responseList;
+    }
+
+    /**
+     * studentId 와 mywordName 으로 특정 MywordEntity 의 wordNameList 에서 wordDocument 를 가져옴!
+     *
+     * @param mywordName 단어장 이름
+     * @param studentId  검색할 사용자 아이디
+     * @return {@link WordDocument} 가 들어있는
+     * {@link List} 를 갖고있는 MywordDetailResopnse 를 리턴함!!!
+     */
+    @Override
+    public MywordDetailResponse getMywordDetailResponseList(String mywordName, String studentId) {
+        // 학생 조회
+        StudentEntity student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("MywordEntity 조회중, studentId 와 일치하는 studentEntity 가 없음!!"));
+        log.trace("student -> {}", student);
+
+        // 해당 학생으로 단어장 조회
+        MywordEntity myword = mywordRepository.findByStudentAndMywordName(student, mywordName)
+                .orElseThrow(() -> new RuntimeException("해당 조건으로 찾을수 있는 MywordEntity 가 없음!"));
+        log.trace("myword -> {}", myword);
+
+        List<String> wordNameList = myword.getWordNameList();
+
+        // FIXME 리펙터링 가능할것으로 보임
+        List<WordDocument> wordDocumentList = this.getWordDocumentList(wordNameList);
+
+
+        MywordDetailResponse detailResponse = MywordDetailResponse.of(mywordName, wordDocumentList);
+        log.trace("detailResponse -> {}", detailResponse);
+
+        return detailResponse;
+    }
+
+    /**
+     * FIXME 리펙터링 가능할것으로 보임..
+     *
+     * @param wordNameList 검색할 단어이름이 들어있는 {@link List}
+     * @return {@link WordDocument} 가 들어있는 {@link List}
+     */
+    @Override
+    public List<WordDocument> getWordDocumentList(List<String> wordNameList) {
+        List<WordDocument> wordDocumentList = new ArrayList<>();
+
+        wordNameList.forEach(wordName -> {
+            Optional<WordDocument> optional = wordRepository.findByWordName(wordName);
+            if(optional.isEmpty()){
+                log.error("wordRepository.findByWordName({}) 실패!!!! 실패하면 안됨!!!!!", wordName);
+                return;
+            }
+            wordDocumentList.add(optional.get());
+        });
+
+        log.trace("wordDocumentList -> {}", wordDocumentList);
+        return wordDocumentList;
     }
 
 }
