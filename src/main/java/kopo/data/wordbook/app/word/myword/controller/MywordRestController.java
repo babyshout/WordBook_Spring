@@ -105,7 +105,6 @@ public class MywordRestController {
     }
 
     /**
-     * TODO 테스트 필요
      *
      * @param session
      * @param mywordName
@@ -116,6 +115,7 @@ public class MywordRestController {
             HttpSession session,
             @RequestParam String mywordName
     ) {
+        log.trace("requestParma mywordName -> {}", mywordName);
         LogInController.LoginSessionInformation sessionInfo =
                 LogInController.getLoginInformationFromSession(session);
 
