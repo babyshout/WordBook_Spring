@@ -1,15 +1,15 @@
 package kopo.data.wordbook.app.word.myword.controller;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import kopo.data.wordbook.app.student.controller.rest.LogInController;
+import kopo.data.wordbook.app.word.myword.controller.request.PostAddNewMywordRequest;
 import kopo.data.wordbook.app.word.myword.controller.response.SimpleMywordResponse;
 import kopo.data.wordbook.app.word.myword.service.MywordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,7 +25,8 @@ public class MywordRestController {
      * mapping 되는 URL 관리..
      */
     public static final class MappedUrl {
-        public static final String getSimpleMywordList = "/myword/list/simple";
+        public static final String getSimpleMywordList = "/list/simple";
+        public static final String postAddNewMyword = "/addNewMyword";
     }
 
     /**
@@ -44,6 +45,19 @@ public class MywordRestController {
 
         List<SimpleMywordResponse> responseList =
                 mywordService.getSimpleMywordList(sessionInfo.studentId());
+
+        return ResponseEntity.ok(responseList);
+    }
+
+    @PostMapping(MappedUrl.postAddNewMyword)
+    public ResponseEntity postAddNewMyword(
+            HttpSession session,
+            @RequestBody @Valid PostAddNewMywordRequest body
+    ) {
+        LogInController.LoginSessionInformation sessionInfo =
+                LogInController.getLoginInformationFromSession(session);
+
+        List<SimpleMywordResponse> responseList = mywordService.addNewMyword(body.newMywordName(), sessionInfo.studentId());
 
         return ResponseEntity.ok(responseList);
     }
