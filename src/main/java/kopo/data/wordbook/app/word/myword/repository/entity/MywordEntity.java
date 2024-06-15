@@ -42,6 +42,7 @@ public class MywordEntity {
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
     private StudentEntity student;
 
     @Id

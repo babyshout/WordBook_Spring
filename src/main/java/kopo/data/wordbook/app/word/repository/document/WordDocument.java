@@ -1,6 +1,7 @@
 package kopo.data.wordbook.app.word.repository.document;
 
 import jakarta.persistence.Id;
+import kopo.data.wordbook.app.word.repository.WordRepository;
 import kopo.data.wordbook.app.word.rest.client.impl.StdictKoreanSearchApiResponse;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,17 @@ public class WordDocument {
 
     @Setter
     private List<WordDetail> wordDetailList;
+
+    /**
+     * 존재한다면 true 반환!
+     * @param wordName 존재하는지 검색할 단어 이름
+     * @param wordRepository 검색에 사용할 {@link WordRepository}
+     * @return 존재여부.. 존재한다면 true!!
+     */
+    public static Boolean exists(String wordName, WordRepository wordRepository) {
+        // 존재한다면.. true!
+        return wordRepository.findByWordName(wordName).isPresent();
+    }
 
     @Data
     @Builder

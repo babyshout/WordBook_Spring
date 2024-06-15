@@ -4,6 +4,8 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import kopo.data.wordbook.app.student.controller.rest.LogInController;
 import kopo.data.wordbook.app.word.myword.controller.request.PostAddNewMywordRequest;
+import kopo.data.wordbook.app.word.myword.controller.request.PostWordNameToMywordRequest;
+import kopo.data.wordbook.app.word.myword.controller.response.MywordResponse;
 import kopo.data.wordbook.app.word.myword.controller.response.SimpleMywordResponse;
 import kopo.data.wordbook.app.word.myword.service.MywordService;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,7 @@ public class MywordRestController {
     public static final class MappedUrl {
         public static final String getSimpleMywordList = "/list/simple";
         public static final String postAddNewMyword = "/addNewMyword";
+        public static final String postWordNameToMyword = "/wordNameToMyword";
     }
 
     /**
@@ -54,11 +57,29 @@ public class MywordRestController {
             HttpSession session,
             @RequestBody @Valid PostAddNewMywordRequest body
     ) {
+        log.trace("body -> {}", body);
         LogInController.LoginSessionInformation sessionInfo =
                 LogInController.getLoginInformationFromSession(session);
 
-        List<SimpleMywordResponse> responseList = mywordService.addNewMyword(body.newMywordName(), sessionInfo.studentId());
+        List<SimpleMywordResponse> responseList =
+                mywordService.addNewMyword(body.newMywordName(), sessionInfo.studentId());
 
         return ResponseEntity.ok(responseList);
+    }
+
+    @PostMapping(MappedUrl.postWordNameToMyword)
+    public ResponseEntity<MywordResponse> postWordNameToMyword(
+            HttpSession session,
+            @RequestBody @Valid PostWordNameToMywordRequest body
+    ) {
+        log.trace("body -> {}", body);
+
+        LogInController.LoginSessionInformation sessionInfo =
+                LogInController.getLoginInformationFromSession(session);
+
+        MywordResponse mywordResponse =
+                mywordService.postWordNameToMyword(body, sessionInfo.studentId());
+
+        return ResponseEntity.ok(mywordResponse);
     }
 }

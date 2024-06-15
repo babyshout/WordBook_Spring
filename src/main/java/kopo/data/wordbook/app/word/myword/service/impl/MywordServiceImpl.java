@@ -2,11 +2,15 @@ package kopo.data.wordbook.app.word.myword.service.impl;
 
 import kopo.data.wordbook.app.student.repository.StudentRepository;
 import kopo.data.wordbook.app.student.repository.entity.StudentEntity;
+import kopo.data.wordbook.app.word.myword.controller.request.PostWordNameToMywordRequest;
+import kopo.data.wordbook.app.word.myword.controller.response.MywordResponse;
 import kopo.data.wordbook.app.word.myword.controller.response.SimpleMywordResponse;
 import kopo.data.wordbook.app.word.myword.repository.MywordRepository;
 import kopo.data.wordbook.app.word.myword.repository.entity.MywordEntity;
 import kopo.data.wordbook.app.word.myword.repository.entity.MywordEntityId;
 import kopo.data.wordbook.app.word.myword.service.MywordService;
+import kopo.data.wordbook.app.word.repository.WordRepository;
+import kopo.data.wordbook.app.word.repository.document.WordDocument;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,6 +26,7 @@ public class MywordServiceImpl implements MywordService {
 
     private final MywordRepository mywordRepository;
     private final StudentRepository studentRepository;
+    private final WordRepository wordRepository;
 
 
     /**
@@ -91,6 +96,63 @@ public class MywordServiceImpl implements MywordService {
 
         // FIXME 여기서부터 조금 비효율적인 로직.. 리펙터링 필요할수 있음
         return this.getSimpleMywordList(studentId);
+    }
+
+    /**
+     * body 에서 추가할 단어이름, 단어장이름 추출해서 studentId 에 넣어줌
+     *
+     * @param body      {@link PostWordNameToMywordRequest} 추가할 단어 이름, 단어장 이름이 들어있음
+     * @param studentId 추가할 사용자 아이디
+     * @return 추가된 결과를 가져온 MywordEntity 를 MywordResponse 로 바꿔서 리턴함
+     */
+    @Override
+    @Transactional
+    public MywordResponse postWordNameToMyword(PostWordNameToMywordRequest body, String studentId) {
+        MywordEntity entity = this.addWordNameToMywordOfStudentId(body.wordName(), body.mywordName(), studentId);
+
+        MywordResponse response = MywordResponse.of(entity);
+
+        log.trace("response -> {}", response);
+
+        return response;
+    }
+
+    /**
+     * wordName 을 studentId 의 mywordName 에 추가함!
+     *
+     * @param wordName
+     * @param mywordName
+     * @param studentId
+     * @return 추가된 {@link MywordEntity}
+     */
+    @Override
+    public MywordEntity addWordNameToMywordOfStudentId(String wordName, String mywordName, String studentId) {
+
+        StudentEntity student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("MywordEntity 조회중, studentId 와 일치하는 studentEntity 가 없음!!"));
+
+        // 추가하고싶다면.. 해당 단어가 mongoDB 에 존재해야함!!
+        if (!WordDocument.exists(wordName, wordRepository)) {
+            log.warn("해당 " + wordName + " 가 mongoDB 에 없음..!");
+            throw new RuntimeException("해당 " + wordName + " 가 mongoDB 에 없음..!");
+        }
+
+        MywordEntity mywordEntity = mywordRepository.findByStudentAndMywordName(student, mywordName)
+                .orElseGet(() -> {
+                    log.trace("{} 를 가진 단어장이 없어 새로 생성!", mywordName);
+                    return mywordRepository.save(MywordEntity.builder()
+                            .mywordName(mywordName)
+                            .student(student)
+                            .build()
+                    );
+                });
+        log.trace("mywordEntity before add wordName -> {}", mywordEntity);
+
+        List<String> wordNameList = mywordEntity.addWordNameToWordNameList(wordName, wordRepository);
+        log.trace("wordNameList -> {}", wordNameList);
+
+        log.trace("mywordEntity after add {} -> {}", wordName, mywordEntity);
+        return mywordEntity;
     }
 
 }
