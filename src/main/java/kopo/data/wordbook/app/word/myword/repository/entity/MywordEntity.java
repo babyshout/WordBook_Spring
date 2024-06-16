@@ -60,9 +60,9 @@ public class MywordEntity {
     @Setter
     private List<String> wordNameList = new ArrayList<>();
 
-    @LastModifiedDate
-    private LocalDate regDate;
     @CreatedDate
+    private LocalDate regDate;
+    @LastModifiedDate
     private LocalDate chgDate;
 
     /**

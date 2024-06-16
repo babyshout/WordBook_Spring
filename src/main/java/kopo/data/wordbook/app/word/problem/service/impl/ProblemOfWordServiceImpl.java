@@ -5,8 +5,11 @@ import kopo.data.wordbook.app.student.repository.StudentRepository;
 import kopo.data.wordbook.app.student.repository.entity.StudentEntity;
 import kopo.data.wordbook.app.word.myword.repository.MywordRepository;
 import kopo.data.wordbook.app.word.myword.repository.entity.MywordEntity;
-import kopo.data.wordbook.app.word.myword.service.MywordService;
+import kopo.data.wordbook.app.word.problem.constant.ProblemOfWordInfo;
 import kopo.data.wordbook.app.word.problem.constant.ProblemOfWordStatus;
+import kopo.data.wordbook.app.word.problem.controller.request.RandomWordDocumentToSolveResultRequest;
+import kopo.data.wordbook.app.word.problem.reopsitory.ProblemOfWordRepository;
+import kopo.data.wordbook.app.word.problem.reopsitory.entity.ProblemOfWordEntity;
 import kopo.data.wordbook.app.word.problem.service.ProblemOfWordService;
 import kopo.data.wordbook.app.word.repository.WordRepository;
 import kopo.data.wordbook.app.word.repository.document.WordDocument;
@@ -14,10 +17,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.security.SecureRandom;
 import java.util.List;
-import java.util.Random;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,6 +29,7 @@ public class ProblemOfWordServiceImpl implements ProblemOfWordService {
     private final WordRepository wordRepository;
     private final StudentRepository studentRepository;
     private final MywordRepository mywordRepository;
+    private final ProblemOfWordRepository problemOfWordRepository;
 
     /**
      * 문제를 풀 {@link WordDocument} 를 studentId 의 mywordName 의 단어장에서 랜덤으로 가져옴
@@ -64,15 +68,85 @@ public class ProblemOfWordServiceImpl implements ProblemOfWordService {
                 .orElseThrow(() -> new RuntimeException(wordName + "이란 단어가 mongoDB 에 없음!!"));
         log.trace("가져온 wordDocument -> {}", wordDocument);
 
+        ProblemOfWordInfo info = ProblemOfWordInfo.builder()
+                .wordName(wordName)
+                .mywordName(mywordName)
+                .studentId(studentId)
+                .build();
 
-        // FIXME 메서드 추출할것!!
+        setStatusAsProgress(session, info);
+
+
+        return wordDocument;
+    }
+
+
+    /**
+     * 단어풀이결과 받아서 {@link ProblemOfWordEntity} 에 넣어줌!
+     *
+     * @param body      풀이결과가 들어있는 {@link RequestBody}
+     * @param studentId 문제를 푼 사용자 아이디
+     * @param session   유효한지 확인할때 사용할 session
+     */
+    @Override
+    public void postRandomWordDocumentToSolveResult(RandomWordDocumentToSolveResultRequest body, String studentId, HttpSession session) {
+        ProblemOfWordInfo info = ProblemOfWordInfo.of(body, studentId);
+
+        validateRequest(info, session);
+
+        StudentEntity student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("session 의 studnetId 로 studentEntity 찾기 실패!!"));
+        log.trace("student -> {}", student);
+
+        MywordEntity myword = mywordRepository.findByStudentAndMywordName(student, body.mywordName())
+                .orElseThrow(() -> new RuntimeException("student 와 body.mywordName() 으로 MywordEntity 찾기 실패!!"));
+        log.trace("myword -> {}", myword);
+
+        ProblemOfWordEntity saving = ProblemOfWordEntity.builder()
+                .wordName(body.wordName())
+                .wordNameAnswer(body.wordNameAnswer())
+                .mywordEntity(myword)
+                .build();
+        log.trace("saving -> {}", saving);
+
+        ProblemOfWordEntity saved = problemOfWordRepository.save(saving);
+        log.trace("saved -> {}", saved);
+
+        log.info("정상적으로 완료!!");
+    }
+
+    private void validateRequest(ProblemOfWordInfo info, HttpSession session) {
+        ProblemOfWordStatus status = getStatusOfProblemOfWord(session);
+        if (status != ProblemOfWordStatus.PROGRESS) {
+            session.invalidate();
+            throw new RuntimeException("ProblemOfWordStatus 가 PROGRESS 가 아님!!");
+        }
+
+        ProblemOfWordInfo infoOfSession =
+                (ProblemOfWordInfo) session.getAttribute(ProblemOfWordInfo.class.getName());
+        log.trace("infoOfSession -> {}", infoOfSession);
+        if (!infoOfSession.equals(info)) {
+            session.invalidate();
+            throw new RuntimeException("요청과, session 에 들어있는 내용이 동일하지 않음..!");
+        }
+    }
+
+    private static void setStatusAsProgress(HttpSession session, ProblemOfWordInfo info) {
         session.setAttribute(ProblemOfWordStatus.class.getName(), ProblemOfWordStatus.PROGRESS);
+        session.setAttribute(ProblemOfWordInfo.class.getName(), info);
 
         ProblemOfWordStatus status =
                 (ProblemOfWordStatus) session.getAttribute(ProblemOfWordStatus.class.getName());
         log.trace("status of ProblemOfWordStatus -> {}", status);
-        // FIXME 여기까지!!
+        ProblemOfWordInfo infoOfSession =
+                (ProblemOfWordInfo) session.getAttribute(ProblemOfWordInfo.class.getName());
+        log.trace("infoOfSession -> {}", infoOfSession);
+    }
 
-        return wordDocument;
+    private static ProblemOfWordStatus getStatusOfProblemOfWord(HttpSession session) {
+        ProblemOfWordStatus status =
+                (ProblemOfWordStatus) session.getAttribute(ProblemOfWordStatus.class.getName());
+        log.trace("status of ProblemOfWordStatus -> {}", status);
+        return status;
     }
 }

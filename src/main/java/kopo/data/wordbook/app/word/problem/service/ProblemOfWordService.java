@@ -2,6 +2,7 @@ package kopo.data.wordbook.app.word.problem.service;
 
 
 import jakarta.servlet.http.HttpSession;
+import kopo.data.wordbook.app.word.problem.controller.request.RandomWordDocumentToSolveResultRequest;
 import kopo.data.wordbook.app.word.repository.document.WordDocument;
 
 public interface ProblemOfWordService {
@@ -13,4 +14,13 @@ public interface ProblemOfWordService {
      * @return 랜덤으로 꺼내온 {@link WordDocument}
      */
     WordDocument getRandomWordDocumentToSolve(String mywordName, String studentId, HttpSession session);
+
+    /**
+     * 단어풀이결과 받아서 {@link kopo.data.wordbook.app.word.problem.reopsitory.entity.ProblemOfWordEntity} 에 넣어줌!
+     *
+     * @param body      풀이결과가 들어있는 {@link org.springframework.web.bind.annotation.RequestBody}
+     * @param studentId 문제를 푼 사용자 아이디
+     * @param session
+     */
+    void postRandomWordDocumentToSolveResult(RandomWordDocumentToSolveResultRequest body, String studentId, HttpSession session);
 }
