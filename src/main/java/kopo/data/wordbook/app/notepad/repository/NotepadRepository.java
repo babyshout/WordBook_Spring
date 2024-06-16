@@ -27,4 +27,6 @@ public interface NotepadRepository extends JpaRepository<NotepadEntity, Long> {
             Long notepadSeq, StudentEntity regStudent
     );
 
+    List<NotepadEntity> findAllByRegStudentOrderByChgDateDesc(StudentEntity regStudent);
+
 }
