@@ -42,8 +42,8 @@ public class CorsConfigurer {
         때문에 addAllowedHeader 가 아닌
         setAllowedOrigins 사용 해야함..
          */
-        corsConfig.setAllowedOrigins(Collections.singletonList("http://localhost:5173/"));
-        corsConfig.setAllowedOrigins(List.of("http://localhost:5173/"));
+//        corsConfig.setAllowedOrigins(Collections.singletonList("http://localhost:5173/"));
+        corsConfig.setAllowedOrigins(List.of("http://localhost:5173/", "http://27.96.134.201:4173"));
         return corsConfig;
     }
 }

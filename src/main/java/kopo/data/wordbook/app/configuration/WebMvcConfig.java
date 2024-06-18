@@ -33,7 +33,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 //                .maxAge(3600);
 
         registry.addMapping("/**")
-                .allowedOriginPatterns("**")
+//                .allowedOriginPatterns("**") fixme 배포때 주석처리함
+                .allowedOriginPatterns("http://27.96.134.201:4173")
                 .combine(myCorsConfigurer);
     }
 }
