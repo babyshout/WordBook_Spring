@@ -152,6 +152,7 @@ public class SearchWordRestClient implements ISearchWordRestClient {
         log.error("searchStdictWord -> stdictKoreanSearchRestClient -> {}", stdictKoreanSearchRestClient);
 
         queryWord = queryWord.replace("-", "");
+        queryWord = queryWord.replace("^", "");
 
         String encodedQueryWord = URLEncoder.encode(queryWord, StandardCharsets.UTF_8);
 
