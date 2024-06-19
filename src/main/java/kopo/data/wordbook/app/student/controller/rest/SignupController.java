@@ -1,6 +1,7 @@
 package kopo.data.wordbook.app.student.controller.rest;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import kopo.data.wordbook.app.student.controller.request.CreateStudentRequest;
 import kopo.data.wordbook.app.student.controller.response.CommonApiResponse;
 import kopo.data.wordbook.app.student.dto.MsgDTO;
@@ -85,6 +86,7 @@ public class SignupController {
     @Builder
     public record EmailVerificationRequest(
 //            @NotBlank(message = "email 입력해주세요")
+            @Email
             String email
     ) {
     }

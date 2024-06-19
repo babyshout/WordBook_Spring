@@ -1,6 +1,8 @@
 package kopo.data.wordbook.app.student.controller.rest;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import kopo.data.wordbook.app.student.controller.request.GetStudentIdRequestBody;
 import kopo.data.wordbook.app.student.controller.response.CommonApiResponse;
 import kopo.data.wordbook.app.student.controller.response.ResetPasswordForIdResult;
@@ -75,8 +77,12 @@ public class ForgotLoginController {
 
     @Builder
     public record ResetPasswordForIdRequestBody(
+            @NotNull
             String studentId,
+            @NotNull
             String name,
+            @NotNull
+            @Email
             String email
     ) {
     }
