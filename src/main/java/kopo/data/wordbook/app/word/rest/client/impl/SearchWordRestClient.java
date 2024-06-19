@@ -2,7 +2,6 @@ package kopo.data.wordbook.app.word.rest.client.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import jakarta.annotation.Resource;
 import kopo.data.wordbook.app.word.repository.WordRepository;
 import kopo.data.wordbook.app.word.repository.document.WordDocument;
@@ -11,7 +10,6 @@ import kopo.data.wordbook.app.word.search.controller.response.SimpleWordResponse
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.json.GsonJsonParser;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -23,7 +21,6 @@ import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 @Component
@@ -64,8 +61,6 @@ public class SearchWordRestClient implements ISearchWordRestClient {
                 naverSearchEncycRestClient.get()
                         .uri(uriToQuery)
                         .retrieve().toEntity(String.class);
-// ResponseEntity<String> entity =
-//                naverSearchEncycRestClient.get().retrieve().toEntity(String.class);
 
         log.error(entity.getBody().toString());
     }
@@ -102,38 +97,24 @@ public class SearchWordRestClient implements ISearchWordRestClient {
                         "?query=" + encodedQueryWord;
         log.trace("uriToQuery -> {}", uriToQuery);
 
-//        ResponseEntity<String> entity =
-//                naverSearchErrataRestClient.get()
-//                        .uri(uriToQuery)
-//                        .retrieve().toEntity(String.class);
 
-//        String entityBodyString = entity.getBody().toString();
-//        log.error("entityBodyString -> {}", entityBodyString);
-
-        record MyApiResponse(
+        record ErrataApiResponse(
                 String errata
         ) {
         }
 
-        ResponseEntity<MyApiResponse> entity1 =
+        ResponseEntity<ErrataApiResponse> entity1 =
                 naverSearchErrataRestClient.get()
                         .uri(uriToQuery)
-                        .retrieve().toEntity(MyApiResponse.class);
+                        .retrieve().toEntity(ErrataApiResponse.class);
 
-//        GsonJsonParser gsonJsonParser = new GsonJsonParser();
-
-//        Map<String, Object> stringObjectMap = gsonJsonParser.parseMap(entityBodyString);
-//        log.trace("stringObjectMap -> {}", stringObjectMap);
-//        log.trace("stringObjectMap.get(\"errata\") -> {}", stringObjectMap.get("errata"));
 
         log.trace("entity1.getBody() -> {}", entity1.getBody());
 
 
-//        String errataString = (String) stringObjectMap.get("errata");
         String errataString = Objects.requireNonNull(entity1.getBody()).errata();
 
         return errataString.isEmpty() ? null : errataString;
-//        return errataString.isEmpty() ? null : errataString;
     }
 
     @Value("${word.stdict.korean.go.kr.key}")
@@ -153,10 +134,11 @@ public class SearchWordRestClient implements ISearchWordRestClient {
 
         queryWord = queryWord.replace("-", "");
         queryWord = queryWord.replace("^", "");
+        queryWord = queryWord.replace(" ", "");
 
         String encodedQueryWord = URLEncoder.encode(queryWord, StandardCharsets.UTF_8);
+        encodedQueryWord = encodedQueryWord.replace("%08", "");
 
-//        new MongoTemplate()
 
         log.trace("queryWord -> {}", queryWord);
         log.trace("encodedQueryWord -> {}", encodedQueryWord);
@@ -171,8 +153,6 @@ public class SearchWordRestClient implements ISearchWordRestClient {
                         "&req_type=" + stdictReqTypeJson;
         log.trace("uriToQuery -> {}", uriToQuery);
 
-//        UriComponents = UriComponentsBuilder.fromHttpUrl(stdictRequestUrl)
-
         ResponseEntity<String> entity =
                 stdictKoreanSearchRestClient.get()
                         .uri(uriToQuery)
@@ -181,8 +161,6 @@ public class SearchWordRestClient implements ISearchWordRestClient {
         log.trace("entity.getBody().toString() -> {}",
                 entity.getBody().toString());
 
-
-        RestTemplate restTemplate = new RestTemplate();
 
 
         String responseBodyToString = entity.getBody().toString();
@@ -206,20 +184,11 @@ public class SearchWordRestClient implements ISearchWordRestClient {
                 // log.method("String", Throwable) 하면.. String 출력하고, stacktrace 출력함
                 log.warn("mongoDB insert 도중 DuplicateKeyException 발생!!", e);
 
-//                WordDocument byWordName = Optional.ofNullable(
-//                        wordRepository.findByWordName(savingWord.getWordName())
-//                ).orElseThrow(()
-//                        ->
-//                        new RuntimeException("mongoDB insert 도중 중복되는 wordName 으로 인해 findByWordName 했지만, 찾지 못함"));
                 WordDocument byWordName = wordRepository.findByWordName(
                         savingWord.getWordName()
                 ).orElseThrow(()
                         ->
                         new RuntimeException("mongoDB insert 도중 중복되는 wordName 으로 인해 findByWordName 했지만, 찾지 못함"));
-//                ).orElseThrow(()
-//                        ->
-//                        new DuplicateKeyException("mongoDB insert 도중 중복되는 wordName 으로 인해 findByWordName 했지만, 찾지 못함"));
-//                log.warn(e.st);
 
                 List<WordDocument.WordDetail> wordDetails = WordDocument.WordDetail.of(apiResponse);
                 byWordName.setWordDetailList(wordDetails);
@@ -295,7 +264,6 @@ public class SearchWordRestClient implements ISearchWordRestClient {
 
         // 위에서 Exception 생기면.. 애초에 여기까지 오지도 못함
         return responseList;
-//        return saved;
 
     }
 }
