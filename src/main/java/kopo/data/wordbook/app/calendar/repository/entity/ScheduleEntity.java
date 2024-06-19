@@ -34,6 +34,7 @@ public class ScheduleEntity {
     @ManyToOne(
             fetch = FetchType.LAZY
     )
+    @ToString.Exclude
     private StudentEntity studentId;
 
     @Column(nullable = false)

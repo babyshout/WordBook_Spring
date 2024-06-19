@@ -133,11 +133,14 @@ public class StudentService implements IStudentService {
 
         String randomPassword = randomIntegerCodeGenerator();
 
-        StudentEntity newEntityWithNewPassword =
-                createNewStudentEntityWithNewPassword(randomPassword, rEntity.get());
+//        StudentEntity newEntityWithNewPassword =
+//                createNewStudentEntityWithNewPassword(randomPassword, rEntity.get());
+        StudentEntity student = rEntity.get();
+        student.setPassword(EncryptUtil.encHashSHA256(randomPassword));
 
-        studentRepository.save(newEntityWithNewPassword);
-        String toMail = EncryptUtil.decAES128CBC(newEntityWithNewPassword.getEmail());
+        StudentEntity saved = studentRepository.save(student);
+        log.trace("saved -> {}", saved);
+        String toMail = EncryptUtil.decAES128CBC(student.getEmail());
         String title = "비밀번호 재설정";
         String contents = "비밀번호가 [" + randomPassword + "] 로 재설정 되었습니다.";
         mailService.doSendMail(toMail, title, contents);

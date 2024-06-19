@@ -43,7 +43,13 @@ public class CorsConfigurer {
         setAllowedOrigins 사용 해야함..
          */
 //        corsConfig.setAllowedOrigins(Collections.singletonList("http://localhost:5173/"));
-        corsConfig.setAllowedOrigins(List.of("http://localhost:5173/", "http://27.96.134.201:4173"));
+        corsConfig.setAllowedOrigins(
+                List.of(
+                        "http://localhost:5173/",
+                        "http://27.96.134.201:4173",
+                        "http://www.sumin.site:4173"
+                )
+        );
         return corsConfig;
     }
 }

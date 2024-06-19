@@ -23,6 +23,9 @@ public class MailService implements IMailService {
 
     @Override
     public boolean doSendMail(String toMail, String title, String contents) {
+        log.trace("toMail -> {}", toMail);
+        log.trace("title -> {}", title);
+        log.trace("contents -> {}", contents);
         if (!isValidParameter(toMail, title, contents)) {
             log.warn("doSendMail 실패!!!");
 //            return false;

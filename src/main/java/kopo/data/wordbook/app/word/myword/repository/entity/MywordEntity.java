@@ -2,7 +2,9 @@ package kopo.data.wordbook.app.word.myword.repository.entity;
 
 
 import jakarta.persistence.*;
+import kopo.data.wordbook.app.notepad.repository.entity.NotepadEntity;
 import kopo.data.wordbook.app.student.repository.entity.StudentEntity;
+import kopo.data.wordbook.app.word.problem.reopsitory.entity.ProblemOfWordEntity;
 import kopo.data.wordbook.app.word.repository.WordRepository;
 import kopo.data.wordbook.app.word.repository.document.WordDocument;
 import lombok.*;
@@ -64,6 +66,18 @@ public class MywordEntity {
     private LocalDate regDate;
     @LastModifiedDate
     private LocalDate chgDate;
+
+
+
+    @OneToMany(
+            orphanRemoval = true,
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            mappedBy = "mywordEntity"
+    )
+    List<ProblemOfWordEntity> problemOfWordEntityList = new ArrayList<>();
+
+
 
     /**
      * save 필요할것으로 보임..
