@@ -46,6 +46,7 @@ public class CorsConfigurer {
         corsConfig.setAllowedOrigins(
                 List.of(
                         "http://localhost:5173/",
+                        "http://localhost:4173/",
                         "http://27.96.134.201:4173",
                         "http://www.sumin.site:4173",
                         "http://www.sumin.site",
