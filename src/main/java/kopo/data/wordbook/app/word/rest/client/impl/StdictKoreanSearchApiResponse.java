@@ -16,7 +16,7 @@ public class StdictKoreanSearchApiResponse {
 
     //    @Getter
 //    @Setter
-    @Data
+    @Data // FIXME
     public static class Channel {
 
         private int total;
