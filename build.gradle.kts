@@ -16,6 +16,11 @@ configurations {
 		extendsFrom(configurations.annotationProcessor.get())
 	}
 }
+//ext {
+//	// open feign 용 cloud version
+//	set("springCloudVersion", "2022.0.3")
+//}
+extra["springCloudVersion"] = "2022.0.3"
 
 repositories {
 	mavenCentral()
@@ -39,6 +44,9 @@ dependencies {
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 	annotationProcessor("org.projectlombok:lombok")
 
+	// openfeign 추가
+	implementation ("org.springframework.cloud:spring-cloud-starter-openfeign")
+
 	// production code 에서 json 만질 일이 있어서 추가..
 //	implementation("com.google.code.gson:gson:2.11.0")
 
@@ -49,6 +57,17 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 //	testImplementation("com.google.code.gson:gson:2.8.9") NOTE record 지원안해서 버전업
 	testImplementation("com.google.code.gson:gson:2.11.0")
+}
+
+
+
+dependencyManagement {
+	imports {
+		// ext, extra[] 안먹혀 local val 로 추가
+		val springCloudVersion = "2022.0.3"
+		// open feign 을 위해 BOM 추가
+		mavenBom("org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}")
+	}
 }
 
 tasks.withType<Test> {
