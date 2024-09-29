@@ -133,6 +133,12 @@ public class LogInController {
     }
 
 
+    /**
+     * Session 정보를 담고있음
+     * @param studentId 학생 정보
+     * @param name 이름
+     * @param email 이메일
+     */
     @Builder
     public record LoginSessionInformation(
             String studentId,
