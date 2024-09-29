@@ -6,11 +6,13 @@ import kopo.data.wordbook.app.word.comment.repository.entity.CommentEntity;
 import kopo.data.wordbook.app.word.comment.service.IWordCommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
+@Service
 public class WordCommentService implements IWordCommentService {
     /**
      * 댓글 리스트를 가져옴
