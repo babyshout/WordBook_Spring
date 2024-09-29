@@ -16,11 +16,11 @@ configurations {
 		extendsFrom(configurations.annotationProcessor.get())
 	}
 }
-//ext {
-//	// open feign 용 cloud version
-//	set("springCloudVersion", "2022.0.3")
-//}
-extra["springCloudVersion"] = "2022.0.3"
+ext {
+	// open feign 용 cloud version
+	set("springCloudVersion", "2023.0.3")
+}
+//extra["springCloudVersion"] = "2023.0.3"
 
 repositories {
 	mavenCentral()
@@ -64,7 +64,7 @@ dependencies {
 dependencyManagement {
 	imports {
 		// ext, extra[] 안먹혀 local val 로 추가
-		val springCloudVersion = "2022.0.3"
+		val springCloudVersion = "2023.0.3"
 		// open feign 을 위해 BOM 추가
 		mavenBom("org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}")
 	}
