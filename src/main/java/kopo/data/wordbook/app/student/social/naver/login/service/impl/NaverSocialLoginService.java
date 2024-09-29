@@ -99,7 +99,7 @@ public class NaverSocialLoginService implements INaverSocialLoginService {
     ) {
         StudentEntity student = StudentEntity.builder()
                 .studentId(idOfNidme)
-                .password("1234")
+                .password(EncryptUtil.encHashSHA256("1234"))
                 .email(EncryptUtil.encAES128CBC(emailOfNidme))
                 .regId(idOfNidme)
                 .changerId(idOfNidme)
