@@ -2,8 +2,6 @@ package kopo.data.wordbook.app.word.comment.repository.entity;
 
 
 import jakarta.persistence.*;
-import kopo.data.wordbook.app.word.myword.repository.entity.MywordEntity;
-import kopo.data.wordbook.app.word.problem.reopsitory.entity.ProblemOfWordEntityId;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.DynamicInsert;
@@ -29,7 +27,7 @@ import java.time.LocalDate;
 // @CreatedDate, @LastModifiedDate 작동을 위해 추가
 // @link https://wildeveloperetrain.tistory.com/76
 @EntityListeners(AuditingEntityListener.class)
-@IdClass(ProblemOfWordEntityId.class)
+@IdClass(CommentEntityId.class)
 public class CommentEntity {
 
     @Id
@@ -39,7 +37,7 @@ public class CommentEntity {
     @GeneratedValue
     private Long wordCommentSeq;
 
-    private String studentName;
+    private String regId;
 
     @CreatedDate
     private LocalDate regDate;
