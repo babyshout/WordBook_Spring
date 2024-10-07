@@ -28,19 +28,43 @@ import java.time.LocalDate;
 // @link https://wildeveloperetrain.tistory.com/76
 @EntityListeners(AuditingEntityListener.class)
 @IdClass(CommentEntityId.class)
+/**
+ * 단어별 댓글을 저장
+ */
 public class CommentEntity {
 
+    /**
+     * 단어이름
+     */
     @Id
     private String wordName;
 
+    /**
+     * 단어이름 - 댓글 별 시퀀스
+     */
     @Id
     @GeneratedValue
     private Long wordCommentSeq;
 
+    /**
+     * 댓글내용
+     */
+    @Column(length = 2000)
+    private String content;
+
+    /**
+     * 작성자 ID
+     */
     private String regId;
 
+    /**
+     * 작성일
+     */
     @CreatedDate
     private LocalDate regDate;
+    /**
+     * 수정일
+     */
     @LastModifiedDate
     private LocalDate chgDate;
 }
