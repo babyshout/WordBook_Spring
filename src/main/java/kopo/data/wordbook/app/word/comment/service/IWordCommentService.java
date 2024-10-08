@@ -18,4 +18,13 @@ public interface IWordCommentService {
      * @return 댓글 리스트 {@link List<CommentEntity>}
      */
     List<CommentEntity> getCommentList(String wordName, LogInController.LoginSessionInformation sessionInfo, HttpSession session);
+
+    /**
+     * content 를 통해 {@link CommentEntity} 생성
+     * @param content 댓글내용
+     * @param wordName 댓글달 단어 이름 (단어 pk)
+     * @param studentId 댓글 달 유저 이름
+     * @return save 한 내용
+     */
+    CommentEntity createComment(String content, String wordName, String studentId);
 }
