@@ -1,12 +1,15 @@
 package kopo.data.wordbook.app.word.comment.service.impl;
 
 import jakarta.servlet.http.HttpSession;
+import kopo.data.wordbook.app.calendar.exception.ScheduleException;
 import kopo.data.wordbook.app.student.controller.rest.LogInController;
 import kopo.data.wordbook.app.word.comment.repository.CommentRepository;
 import kopo.data.wordbook.app.word.comment.repository.entity.CommentEntity;
+import kopo.data.wordbook.app.word.comment.repository.entity.CommentEntityId;
 import kopo.data.wordbook.app.word.comment.service.IWordCommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -57,5 +60,63 @@ public class WordCommentService implements IWordCommentService {
         log.trace("saved : {}", saved);
 
         return saved;
+    }
+
+    /**
+     * wordName, wordCommentSeq 를 통해 해당 댓글을 수정함
+     *
+     * @param content
+     * @param wordName
+     * @param wordCommentSeq
+     * @param studentId
+     * @return
+     */
+    @Override
+    public CommentEntity updateComment(String content, String wordName, String wordCommentSeq, String studentId) {
+
+        CommentEntityId entityId = CommentEntityId.builder()
+                .wordCommentSeq(Long.valueOf(wordCommentSeq))
+                .wordName(wordName).build();
+
+        log.trace("entity Id : {}", entityId);
+
+        CommentEntity entity = commentRepository.findById(entityId).orElseThrow(
+                () -> new ScheduleException("student 가 존재하지 않음", HttpStatus.UNAUTHORIZED)
+        );
+
+        log.trace("entity : {}", entity);
+
+        entity.setContent(content);
+
+        CommentEntity saved = commentRepository.save(entity);
+
+        log.trace("saved : {}", saved);
+        return saved;
+    }
+
+    /**
+     * wordName, wordCommentSeq 를 통해 해당 댓글을 삭제함
+     *
+     * @param wordName
+     * @param wordCommentSeq
+     * @param studentId
+     * @return
+     */
+    @Override
+    public CommentEntity deleteComment(String wordName, String wordCommentSeq, String studentId) {
+
+        CommentEntityId entityId = CommentEntityId.builder()
+                .wordCommentSeq(Long.valueOf(wordCommentSeq))
+                .wordName(wordName).build();
+
+        CommentEntity entity = commentRepository.findById(entityId).orElseThrow(
+                () -> new ScheduleException("student 가 존재하지 않음", HttpStatus.UNAUTHORIZED)
+        );
+
+        commentRepository.delete(entity);
+
+//        commentRepository.deleteById(entityId);
+
+        return entity;
     }
 }

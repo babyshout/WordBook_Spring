@@ -27,4 +27,23 @@ public interface IWordCommentService {
      * @return save 한 내용
      */
     CommentEntity createComment(String content, String wordName, String studentId);
+
+    /**
+     * wordName, wordCommentSeq 를 통해 해당 댓글을 수정함
+     * @param content
+     * @param wordName
+     * @param wordCommentSeq
+     * @param studentId
+     * @return
+     */
+    CommentEntity updateComment(String content, String wordName, String wordCommentSeq, String studentId);
+
+    /**
+     * wordName, wordCommentSeq 를 통해 해당 댓글을 삭제함
+     * @param wordName
+     * @param wordCommentSeq
+     * @param studentId
+     * @return
+     */
+    CommentEntity deleteComment(String wordName, String wordCommentSeq, String studentId);
 }

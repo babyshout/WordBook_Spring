@@ -14,6 +14,7 @@ import java.time.LocalDate;
 
 @Slf4j
 @Getter
+@Setter
 @ToString
 @EqualsAndHashCode
 @NoArgsConstructor

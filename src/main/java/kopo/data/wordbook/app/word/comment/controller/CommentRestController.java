@@ -47,8 +47,6 @@ public class CommentRestController {
     }
 
     /**
-     * TODO 테스트 필요함
-     * TODO 작성필요
      * 댓글 생성 요청
      *
      * @param session
@@ -76,65 +74,61 @@ public class CommentRestController {
         return ResponseEntity.ok(responseBody);
     }
 
-//    /**
-//     * TODO 테스트 필요함
-//     * TODO 작성필요
-//     * 댓글 업데이트 요청
-//     *
-//     * @param session
-//     * @param body
-//     * @return
-//     */
-//    @PatchMapping()
-//    public ResponseEntity<CommentEntity> patchComment(
-//            HttpSession session,
-//            @RequestParam("wordName") String wordName,
-//            @RequestParam("wordCommentSeq") String wordCommentSeq,
-//            @RequestBody CommentPostRequest body
-//    ) {
-//        // session 정보를 가져옴
-//        LogInController.LoginSessionInformation sessionInfo =
-//                getSessionInfo(session);
-//        // 유효한 세션이 아니면 HttpStatus.BAD_REQUEST return!!
-//        if (!validSession(session, sessionInfo)) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//
-//        // 유효한 유저인지 검사가 끝났으면, notepad 를 생성함!
-//        CommentEntity responseBody = wordCommentService.updateComment(
-//                body.content(), wordName, sessionInfo.studentId());
-//
-//        return ResponseEntity.ok(responseBody);
-//    }
-//
-//    /**
-//     * TODO 테스트 필요함
-//     * TODO 작성필요
-//     * 댓글 삭제 요청
-//     *
-//     * @param session
-//     * @return
-//     */
-//    @DeleteMapping
-//    public ResponseEntity<CommentEntity> deleteComment(
-//            HttpSession session,
-//            @RequestParam("wordName") String wordName,
-//            @RequestParam("wordCommentSeq") String wordCommentSeq
-//    ) {
-//        // session 정보를 가져옴
-//        LogInController.LoginSessionInformation sessionInfo =
-//                getSessionInfo(session);
-//        // 유효한 세션이 아니면 HttpStatus.BAD_REQUEST return!!
-//        if (!validSession(session, sessionInfo)) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//
-//        // 유효한 유저인지 검사가 끝났으면, notepad 를 생성함!
-//        CommentEntity responseBody = wordCommentService.deleteComment(
-//                wordName, wordCommentSeq, sessionInfo.studentId());
-//
-//        return ResponseEntity.ok(responseBody);
-//    }
+    /**
+     * 댓글 업데이트 요청
+     *
+     * @param session
+     * @param body
+     * @return
+     */
+    @PatchMapping()
+    public ResponseEntity<CommentEntity> patchComment(
+            HttpSession session,
+            @RequestParam("wordName") String wordName,
+            @RequestParam("wordCommentSeq") String wordCommentSeq,
+            @RequestBody CommentPostRequest body
+    ) {
+        // session 정보를 가져옴
+        LogInController.LoginSessionInformation sessionInfo =
+                getSessionInfo(session);
+        // 유효한 세션이 아니면 HttpStatus.BAD_REQUEST return!!
+        if (!validSession(session, sessionInfo)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        // 유효한 유저인지 검사가 끝났으면, notepad 를 생성함!
+        CommentEntity responseBody = wordCommentService.updateComment(
+                body.content(), wordName, wordCommentSeq, sessionInfo.studentId());
+
+        return ResponseEntity.ok(responseBody);
+    }
+
+    /**
+     * 댓글 삭제 요청
+     *
+     * @param session
+     * @return
+     */
+    @DeleteMapping
+    public ResponseEntity<CommentEntity> deleteComment(
+            HttpSession session,
+            @RequestParam("wordName") String wordName,
+            @RequestParam("wordCommentSeq") String wordCommentSeq
+    ) {
+        // session 정보를 가져옴
+        LogInController.LoginSessionInformation sessionInfo =
+                getSessionInfo(session);
+        // 유효한 세션이 아니면 HttpStatus.BAD_REQUEST return!!
+        if (!validSession(session, sessionInfo)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        // 유효한 유저인지 검사가 끝났으면, notepad 를 생성함!
+        CommentEntity responseBody = wordCommentService.deleteComment(
+                wordName, wordCommentSeq, sessionInfo.studentId());
+
+        return ResponseEntity.ok(responseBody);
+    }
 
     /**
      * {@link kopo.data.wordbook.app.student.controller.rest.LogInController.LoginSessionInformation} 를 가져옴
